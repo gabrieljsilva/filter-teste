@@ -1,0 +1,163 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Category {
+  id: String!
+  name: String!
+  createdAt: DateTime!
+  deletedAt: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Photo {
+  id: String!
+  url: String!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  category: Category!
+}
+
+type Credentials {
+  id: String!
+  email: String!
+  createdAt: DateTime!
+  deletedAt: DateTime
+}
+
+type User {
+  id: String!
+  name: String!
+  birthDate: DateTime!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  photos: [Photo!]!
+  credentials: Credentials!
+}
+
+type Query {
+  findUsers(filters: UserFilter): [User!]!
+}
+
+input UserFilter {
+  id: IdFilter
+  name: StringFilter
+  birthDate: DateTimeFilter
+  createdAt: DateTimeFilter
+  deletedAt: DateTimeFilter
+  photos: PhotoFilter
+  credentials: CredentialsFilter
+  _and: [UserFilter!]
+  _or: [UserFilter!]
+  _not: NotUserFilter
+}
+
+input IdFilter {
+  is: String
+}
+
+input StringFilter {
+  is: String
+  like: String
+  in: [String]
+}
+
+input DateTimeFilter {
+  is: DateTime
+  in: [DateTime]
+  gt: DateTime
+  lt: DateTime
+  gte: DateTime
+  lte: DateTime
+}
+
+input PhotoFilter {
+  id: StringFilter
+  url: StringFilter
+  createdAt: DateTimeFilter
+  deletedAt: DateTimeFilter
+  categoryId: StringFilter
+  userId: StringFilter
+  category: CategoryFilter
+  _and: [PhotoFilter!]
+  _or: [PhotoFilter!]
+  _not: NotPhotoFilter
+}
+
+input CategoryFilter {
+  id: StringFilter
+  name: StringFilter
+  createdAt: DateTimeFilter
+  deletedAt: DateTimeFilter
+  _and: [CategoryFilter!]
+  _or: [CategoryFilter!]
+  _not: NotCategoryFilter
+}
+
+input NotCategoryFilter {
+  id: StringFilter
+  name: StringFilter
+  createdAt: DateTimeFilter
+  deletedAt: DateTimeFilter
+}
+
+input NotPhotoFilter {
+  id: StringFilter
+  url: StringFilter
+  createdAt: DateTimeFilter
+  deletedAt: DateTimeFilter
+  categoryId: StringFilter
+  userId: StringFilter
+  category: CategoryFilter
+}
+
+input CredentialsFilter {
+  email: StringFilter
+  _and: [CredentialsFilter!]
+  _or: [CredentialsFilter!]
+  _not: NotCredentialsFilter
+}
+
+input NotCredentialsFilter {
+  email: StringFilter
+}
+
+input NotUserFilter {
+  id: IdFilter
+  name: StringFilter
+  birthDate: DateTimeFilter
+  createdAt: DateTimeFilter
+  deletedAt: DateTimeFilter
+  photos: PhotoFilter
+  credentials: CredentialsFilter
+}
+
+type Mutation {
+  login(loginInput: LoginDto!): String!
+  createUser(createUserInput: CreateUserDto!): User!
+  deleteUserById(userId: String!): User!
+  updateUser(updateUserInput: UpdateUserDto!): User!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+input CreateUserDto {
+  name: String!
+  email: String!
+  password: String!
+  birthDate: DateTime!
+}
+
+input UpdateUserDto {
+  id: ID!
+  name: String
+  birthDate: DateTime
+  password: String
+}

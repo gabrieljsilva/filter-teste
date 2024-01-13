@@ -1,0 +1,2 @@
+export const FILTER_FIELD_TYPE = '__NEST_FILTER:FIELD_TYPE';
+export const FILTER_PIPES = '__NEST_FILTER:PIPES';

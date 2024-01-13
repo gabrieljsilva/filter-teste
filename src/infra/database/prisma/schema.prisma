@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  photo Photo[]
+
+  @@map("category")
+}
+
+model Photo {
+  id        String    @id @default(uuid())
+  url       String
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  @@map("photos")
+}
+
+model Credentials {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User[]
+
+  @@map("credentials")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  birthDate DateTime  @map("birth_date")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  photos        Photo[]
+  credentialsId String
+  credentials   Credentials @relation(fields: [credentialsId], references: [id])
+
+  @@map("users")
+}
