@@ -5,8 +5,6 @@ import { ToPrismaQueryPipe } from './pipes';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const nestFilterModule = app.get(NestFilterModule);
-  nestFilterModule.applyPipes(ToPrismaQueryPipe);
   await app.listen(3000);
 }
 
