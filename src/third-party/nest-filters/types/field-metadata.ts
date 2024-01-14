@@ -5,11 +5,13 @@ import { TypeOptions } from '@nestjs/graphql/dist/interfaces/type-options.interf
 export type FieldType = Type | GqlTypeReference;
 export type FieldTypeFN = (() => FieldType) | (() => Array<FieldType>);
 
+type FieldMetadataOptions = TypeOptions & { description?: string };
+
 export class FieldMetadata {
   name: string;
   originalName: string;
   type: FieldTypeFN;
-  options?: TypeOptions & { description?: string };
+  options?: FieldMetadataOptions;
 
   constructor(metadata: Omit<FieldMetadata, 'getTypeIfForwardRef'>) {
     this.name = metadata.name;

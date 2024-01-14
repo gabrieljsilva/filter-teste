@@ -84,5 +84,10 @@
   "prisma": {
     "schema": "src/infra/database/prisma/schema.prisma",
     "seed": "ts-node src/infra/database/prisma/seeders/index.ts"
+  },
+  "engineStrict": true,
+  "engines" : {
+    "npm" : "<9.6.0",
+    "node" : "<=20.11.0"
   }
 }

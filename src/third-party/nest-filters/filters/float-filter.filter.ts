@@ -5,9 +5,6 @@ export class FloatFilter {
   @Field(() => Float, { nullable: true })
   is?: number;
 
-  @Field(() => Float, { nullable: true })
-  like?: number;
-
   @Field(() => [Float], { nullable: 'itemsAndList' })
   in?: Array<number>;
 

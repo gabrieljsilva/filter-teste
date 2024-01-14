@@ -5,9 +5,6 @@ export class IntFilter {
   @Field(() => Int, { nullable: true })
   is?: number;
 
-  @Field(() => Int, { nullable: true })
-  like?: number;
-
   @Field(() => [Int], { nullable: 'itemsAndList' })
   in?: Array<number>;
 
