@@ -1,10 +1,6 @@
 import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
-import { FieldType } from '../types/field-metadata';
 import { Type } from '@nestjs/common';
-import { GraphQLScalarType } from 'graphql/type';
 
-export function getOriginalTypeByFilter(type: FieldType) {
-  return FilterTypeMetadataStorage.getTypeByFilterType(type) as
-    | Type
-    | GraphQLScalarType;
+export function getOriginalTypeByFilter(type: Type) {
+  return FilterTypeMetadataStorage.getTypeByFilterType(type);
 }

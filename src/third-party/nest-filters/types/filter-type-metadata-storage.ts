@@ -24,11 +24,11 @@ export class FilterTypeMetadataStorage {
   }
 
   public static getFilterTypeByTarget(target: GqlTypeReference) {
-    return this.filterTypesByScalar.get(target);
+    return this.filterTypesByScalar.getValueByKey(target);
   }
 
-  public static getTypeByFilterType(filterType: FieldType) {
-    return this.filterTypesByScalar.getKeyByValue(filterType as Type);
+  public static getTypeByFilterType(filterType: Type) {
+    return this.filterTypesByScalar.getKeyByValue(filterType);
   }
 
   public static addFieldMetadata(

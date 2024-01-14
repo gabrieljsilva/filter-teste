@@ -7,8 +7,6 @@ import {
   getOriginalTypeByFilter,
   getFieldMetadata,
 } from '../third-party/nest-filters/utils';
-import { GraphType } from '@apollo/server/src/plugin/schemaReporting/generated/operations';
-import { ID } from '@nestjs/graphql';
 
 export class ToPrismaQueryPipe implements PipeTransform {
   private readonly type: Type;
@@ -37,7 +35,7 @@ export class ToPrismaQueryPipe implements PipeTransform {
         (metadata) => metadata.originalName === property,
       );
       const propertyType = propertyMetadata.type();
-      const originalType = getOriginalTypeByFilter(propertyType);
+      const originalType = getOriginalTypeByFilter(propertyType as Type);
 
       // Melhorar o desempenho em runtime indexando os metadados pelo "originalName" = Aumentar o uso de RAM e diminuir o uso do processador
       // Consertar a tipagem dos métodos do FilterMetadataStorage
