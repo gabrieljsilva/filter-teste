@@ -1,9 +1,14 @@
-import { ArgumentMetadata, PipeTransform, Type } from '@nestjs/common';
+import { PipeTransform, Type } from '@nestjs/common';
 
 import { FILTER_OPERATOR } from '../third-party/nest-filters';
 import { FilterOf } from '../third-party/nest-filters';
 import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
-import { getFieldMetadata } from '../third-party/nest-filters/utils';
+import {
+  getOriginalTypeByFilter,
+  getFieldMetadata,
+} from '../third-party/nest-filters/utils';
+import { GraphType } from '@apollo/server/src/plugin/schemaReporting/generated/operations';
+import { ID } from '@nestjs/graphql';
 
 export class ToPrismaQueryPipe implements PipeTransform {
   private readonly type: Type;
@@ -16,7 +21,7 @@ export class ToPrismaQueryPipe implements PipeTransform {
     this.type = type;
   }
 
-  transform(value: FilterOf<unknown>, metadata: ArgumentMetadata): any {
+  transform(value: FilterOf<unknown>): any {
     const fieldMetadata = getFieldMetadata(this.type);
     return this.getWhereInputQuery(value, fieldMetadata);
   }
@@ -28,7 +33,16 @@ export class ToPrismaQueryPipe implements PipeTransform {
     const query = {};
 
     for (const [property, fieldFilters] of Object.entries(filter)) {
-      // get field metadata here
+      const [propertyMetadata] = metadata.filter(
+        (metadata) => metadata.originalName === property,
+      );
+      const propertyType = propertyMetadata.type();
+      const originalType = getOriginalTypeByFilter(propertyType);
+
+      // Melhorar o desempenho em runtime indexando os metadados pelo "originalName" = Aumentar o uso de RAM e diminuir o uso do processador
+      // Consertar a tipagem dos métodos do FilterMetadataStorage
+      // Talvez Adicionar o tipo original na classe FieldMetadata? = Aumentar o uso de RAM e diminuir o uso do processador
+
       for (const [operation, value] of Object.entries(fieldFilters)) {
         if (operation === FILTER_OPERATOR.is) {
           query[property] = value;

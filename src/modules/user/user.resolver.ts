@@ -41,9 +41,10 @@ export class UserResolver {
 
   @Query(() => [User])
   async findUsers(
-    @FilterArgs(User)
+    @FilterArgs(User, ToPrismaQueryPipe)
     userFilter: FilterOf<User>,
   ) {
+    console.log(userFilter);
     return this.userService.findUsers(userFilter);
   }
 

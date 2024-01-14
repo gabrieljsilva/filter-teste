@@ -5,7 +5,7 @@ import { FILTER_FIELD_TYPE, filterTypeMap } from '../constants';
 import { applyField } from '../utils';
 
 import { BidirectionalMap } from './bidirectional-map';
-import { FieldMetadata } from './field-metadata';
+import { FieldMetadata, FieldType } from './field-metadata';
 import { DependencyStorage } from './dependency-storage';
 
 export class FilterTypeMetadataStorage {
@@ -25,6 +25,10 @@ export class FilterTypeMetadataStorage {
 
   public static getFilterTypeByTarget(target: GqlTypeReference) {
     return this.filterTypesByScalar.get(target);
+  }
+
+  public static getTypeByFilterType(filterType: FieldType) {
+    return this.filterTypesByScalar.getKeyByValue(filterType as Type);
   }
 
   public static addFieldMetadata(
