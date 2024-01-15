@@ -7,6 +7,7 @@ import {
 import { isFunction } from '@nestjs/common/utils/shared.utils';
 import { FieldMetadata } from '../types/field-metadata';
 import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
+import { Type } from '@nestjs/common';
 
 export type FieldOptions = {
   name?: string;
@@ -60,6 +61,7 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
         name: fieldOptions?.name ?? propertyKey,
         originalName: propertyKey,
         type: fieldFilterType ? () => fieldFilterType : () => fieldType,
+        originalType: fieldType as Type,
         options: options,
       }),
     );

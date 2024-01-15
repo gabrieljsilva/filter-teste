@@ -34,12 +34,20 @@ export class ToPrismaQueryPipe implements PipeTransform {
       const [propertyMetadata] = metadata.filter(
         (metadata) => metadata.originalName === property,
       );
-      const propertyType = propertyMetadata.type();
-      const originalType = getOriginalTypeByFilter(propertyType as Type);
 
-      // Melhorar o desempenho em runtime indexando os metadados pelo "originalName" = Aumentar o uso de RAM e diminuir o uso do processador
+      console.log(propertyMetadata.originalType);
+
+      // console.log(originalType);
+
       // Consertar a tipagem dos métodos do FilterMetadataStorage
-      // Talvez Adicionar o tipo original na classe FieldMetadata? = Aumentar o uso de RAM e diminuir o uso do processador
+
+      // Otimizar o desempenho em runtime indexando os metadados pelo "originalName"
+      //// Isso aumentaria o uso de RAM e diminuiria o uso do processador por requisição
+      //// Diminuir iterações com complixidade O(1) ao invés de O(N)
+
+      // Talvez Adicionar o tipo original na classe FieldMetadata?
+      //// Isso aumentaria o uso de RAM e diminuiria o uso do processador por requisição
+      //// Diminuir iterações com complixidade O(1) ao invés de O(N)
 
       for (const [operation, value] of Object.entries(fieldFilters)) {
         if (operation === FILTER_OPERATOR.is) {

@@ -11,6 +11,7 @@ export class FieldMetadata {
   name: string;
   originalName: string;
   type: FieldTypeFN;
+  originalType?: Type;
   options?: FieldMetadataOptions;
 
   constructor(metadata: Omit<FieldMetadata, 'getTypeIfForwardRef'>) {
@@ -18,6 +19,7 @@ export class FieldMetadata {
     this.originalName = metadata.originalName;
     this.type = metadata.type;
     this.options = metadata.options;
+    this.originalType = metadata.originalType;
   }
 
   getTypeIfForwardRef() {
