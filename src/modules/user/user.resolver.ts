@@ -15,7 +15,6 @@ import { UserService } from './user.service';
 import { User, Photo, Credentials } from '../../models';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { ToPrismaQueryPipe } from '../../pipes';
-import { UsePipes } from '@nestjs/common';
 
 @Resolver(User)
 export class UserResolver {

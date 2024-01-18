@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 type Category {
-  id: String!
+  id: ID!
   name: String!
   createdAt: DateTime!
   deletedAt: DateTime
@@ -15,7 +15,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Photo {
-  id: String!
+  id: ID!
   url: String!
   createdAt: DateTime!
   deletedAt: DateTime
@@ -51,9 +51,9 @@ input UserFilter {
   deletedAt: DateTimeFilter
   photos: PhotoFilter
   credentials: CredentialsFilter
+  _not: NotUserFilter
   _and: [UserFilter!]
   _or: [UserFilter!]
-  _not: NotUserFilter
 }
 
 input IdFilter {
@@ -76,37 +76,37 @@ input DateTimeFilter {
 }
 
 input PhotoFilter {
-  id: StringFilter
+  id: IdFilter
   url: StringFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
   categoryId: StringFilter
   userId: StringFilter
   category: CategoryFilter
+  _not: NotPhotoFilter
   _and: [PhotoFilter!]
   _or: [PhotoFilter!]
-  _not: NotPhotoFilter
 }
 
 input CategoryFilter {
-  id: StringFilter
+  id: IdFilter
   name: StringFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
+  _not: NotCategoryFilter
   _and: [CategoryFilter!]
   _or: [CategoryFilter!]
-  _not: NotCategoryFilter
 }
 
 input NotCategoryFilter {
-  id: StringFilter
+  id: IdFilter
   name: StringFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
 }
 
 input NotPhotoFilter {
-  id: StringFilter
+  id: IdFilter
   url: StringFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
@@ -117,9 +117,10 @@ input NotPhotoFilter {
 
 input CredentialsFilter {
   email: StringFilter
+  _not: NotCredentialsFilter
   _and: [CredentialsFilter!]
   _or: [CredentialsFilter!]
-  _not: NotCredentialsFilter
+  user: UserFilter
 }
 
 input NotCredentialsFilter {

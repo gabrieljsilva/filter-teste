@@ -1,6 +1,6 @@
 export class MultiMap<Key, Value> {
-  private readonly from: Map<Key, Set<Value>>;
-  private readonly to: Map<Value, Key>;
+  protected readonly from: Map<Key, Set<Value>>;
+  protected readonly to: Map<Value, Key>;
 
   constructor() {
     this.from = new Map();
@@ -17,12 +17,6 @@ export class MultiMap<Key, Value> {
     this.to.set(value, key);
   }
 
-  deleteByKey(key: Key) {
-    this.from.delete(key);
-    const set = this.from.get(key);
-    set?.forEach((key) => this.to.delete(key));
-  }
-
   deleteByValue(value: Value) {
     const key = this.to.get(value);
     if (key) {
@@ -37,22 +31,18 @@ export class MultiMap<Key, Value> {
   }
 
   getValuesByKey(key: Key) {
-    return Array.from(this.from.get(key) || []);
-  }
-
-  getKeyByValue(value: Value) {
-    return this.to.get(value);
+    return this.from.get(key);
   }
 
   keys() {
-    return Array.from(this.from.keys() || []);
+    return this.from.keys();
   }
 
   values() {
-    return Array.from(this.to.keys() || []);
+    return this.to.keys();
   }
 
-  getKeysByValue() {
-    return this.to.entries();
+  entries() {
+    return this.from.entries();
   }
 }

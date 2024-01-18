@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import Prisma from '@prisma/client';
 
 import { Category } from './category';
@@ -8,8 +8,8 @@ import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
 @FilterableEntity()
 @ObjectType()
 export class Photo implements Prisma.Photo {
-  @Field()
-  @FilterableField()
+  @Field(() => ID)
+  @FilterableField(() => ID)
   id: string;
 
   @Field()

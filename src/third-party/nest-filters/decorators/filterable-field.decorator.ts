@@ -48,7 +48,7 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
       propertyKey: propertyKey,
       explicitTypeFn: returnTypeFunc,
       typeOptions: fieldTypeOptions,
-      ignoreOnUndefinedType: true,
+      ignoreOnUndefinedType: false,
     });
 
     const fieldType = typeFn();

@@ -14,7 +14,7 @@ export class FieldMetadata {
   originalType?: Type;
   options?: FieldMetadataOptions;
 
-  constructor(metadata: Omit<FieldMetadata, 'getTypeIfForwardRef'>) {
+  constructor(metadata: Omit<FieldMetadata, 'getType' | 'isFieldLoaded'>) {
     this.name = metadata.name;
     this.originalName = metadata.originalName;
     this.type = metadata.type;
@@ -22,7 +22,7 @@ export class FieldMetadata {
     this.originalType = metadata.originalType;
   }
 
-  getTypeIfForwardRef() {
+  getType() {
     const forwardRef = this.type()?.['forwardRef'];
 
     if (forwardRef) {

@@ -35,7 +35,7 @@ export class ToPrismaQueryPipe implements PipeTransform {
         (metadata) => metadata.originalName === property,
       );
 
-      console.log(propertyMetadata.originalType);
+      // console.log(propertyMetadata.originalType);
 
       // console.log(originalType);
 

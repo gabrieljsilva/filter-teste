@@ -24,6 +24,13 @@ export function FilterableEntity(name?: string) {
       .setName(filterName)
       .setTarget(target)
       .setFields(fields)
+      .addField(
+        new FieldMetadata({
+          name: '_not',
+          originalName: '_not',
+          type: () => notFilterInputType,
+        }),
+      )
       .addDynamicField(
         (inputType) =>
           new FieldMetadata({
@@ -39,19 +46,10 @@ export function FilterableEntity(name?: string) {
             originalName: '_and',
             type: () => [inputType],
           }),
-      )
-      .addDynamicField(
-        () =>
-          new FieldMetadata({
-            name: '_not',
-            originalName: '_not',
-            type: () => notFilterInputType,
-          }),
       );
 
     const filterInputType = filterTypeBuilder.build();
     FilterTypeMetadataStorage.setFilterType(target, filterInputType);
-
     FilterTypeMetadataStorage.onEntityLoaded(target);
   };
 }

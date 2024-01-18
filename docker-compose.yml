@@ -29,6 +29,7 @@ services:
       - postgres:/data/postgres
     networks:
       - default
+    restart: always
 
 networks:
   default:

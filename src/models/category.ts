@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import Prisma from '@prisma/client';
 
 import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
@@ -6,8 +6,8 @@ import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
 @FilterableEntity()
 @ObjectType()
 export class Category implements Prisma.Category {
-  @Field()
-  @FilterableField()
+  @Field(() => ID)
+  @FilterableField(() => ID)
   id: string;
 
   @Field()
