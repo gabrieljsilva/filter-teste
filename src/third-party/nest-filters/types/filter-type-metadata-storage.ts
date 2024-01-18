@@ -6,7 +6,7 @@ import { BidirectionalMap } from './bidirectional-map';
 import { FieldMetadata } from './field-metadata';
 import { DependencyStorage } from './dependency-storage';
 import { MultiMap } from './multimap';
-import { applyField } from '../utils';
+import { FilterTypeBuilder } from './filter-type-builder';
 
 export class FilterTypeMetadataStorage {
   private static dependencyStorage = new DependencyStorage();
@@ -59,7 +59,7 @@ export class FilterTypeMetadataStorage {
     for (const [dependent, fields] of dependents.entries()) {
       for (const field of fields) {
         field.type = () => filterType;
-        applyField(dependent, field);
+        FilterTypeBuilder.applyField(dependent, field);
         this.dependencyStorage.deleteByValue(field);
       }
     }

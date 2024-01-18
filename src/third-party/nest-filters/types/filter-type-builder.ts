@@ -1,8 +1,8 @@
-import { InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
 import { inheritPropertyInitializers } from '@nestjs/mapped-types';
 import { FieldMetadata } from './field-metadata';
-import { applyField } from '../utils';
+import { FilterTypeMetadataStorage } from './filter-type-metadata-storage';
 
 export class FilterTypeBuilder {
   private target: NonNullable<any>;
@@ -13,6 +13,22 @@ export class FilterTypeBuilder {
   constructor() {
     this.fields = [];
     this.dynamicFields = new Set();
+  }
+
+  static applyField(target: Type, field: FieldMetadata) {
+    const type = field.type();
+
+    const forwardedRef = type?.['forwardRef'] as Function;
+
+    if (forwardedRef) {
+      FilterTypeMetadataStorage.addLazyLoadDependency(target, field);
+      return;
+    }
+
+    Field(field.type, {
+      nullable: true,
+      defaultValue: undefined,
+    })(target.prototype, field.name);
   }
 
   setName(name: string) {
@@ -52,11 +68,13 @@ export class FilterTypeBuilder {
       value: this.name,
     });
 
-    this.fields?.forEach((field) => applyField(FilterInputType, field));
+    this.fields?.forEach((field) =>
+      FilterTypeBuilder.applyField(FilterInputType, field),
+    );
 
     this.dynamicFields.forEach((dynamicField) => {
       const field = dynamicField(FilterInputType);
-      applyField(FilterInputType, field);
+      FilterTypeBuilder.applyField(FilterInputType, field);
     });
 
     InputType()(FilterInputType);
