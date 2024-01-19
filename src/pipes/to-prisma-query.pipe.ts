@@ -18,6 +18,10 @@ export class ToPrismaQueryPipe implements PipeTransform {
   }
 
   transform(value: FilterOf<unknown>): any {
+    if (!value) {
+      return {};
+    }
+
     const fieldMetadata = getFieldMetadata(this.type);
     return this.getWhereInputQuery(value, fieldMetadata);
   }
