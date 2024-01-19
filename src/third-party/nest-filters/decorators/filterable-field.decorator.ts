@@ -1,13 +1,14 @@
-import { reflectTypeFromMetadata } from '@nestjs/graphql/dist/utils/reflection.utilts';
+import { Type } from '@nestjs/common';
 import {
   GqlTypeReference,
   ReturnTypeFunc,
   ReturnTypeFuncValue,
 } from '@nestjs/graphql';
 import { isFunction } from '@nestjs/common/utils/shared.utils';
+import { reflectTypeFromMetadata } from '@nestjs/graphql/dist/utils/reflection.utilts';
+
 import { FieldMetadata } from '../types/field-metadata';
 import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
-import { Type } from '@nestjs/common';
 import { primitiveTypes } from '../constants';
 
 export type FieldOptions = {

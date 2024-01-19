@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-
-import { FilterOf } from '../../third-party/nest-filters';
-
 import { CreateUserDto } from './dto';
 import { PrismaService } from '../../infra';
 import { Hashing } from '../../utils';
-import { User } from '../../models';
 import { UpdateUserDto } from './dto';
 
 @Injectable()

@@ -30,7 +30,7 @@ export class ToPrismaQueryPipe implements PipeTransform {
     for (const [property, fieldFilters] of Object.entries(filter)) {
       // Otimizar o desempenho em runtime indexando os metadados pelo "name"
       // * Isso aumentaria o uso de RAM e diminuiria o uso do processador por requisição
-      // * Diminuir iterações com complixidade O(1) ao invés de O(N)
+      // * Diminuir iterações com complexidade O(1) ao invés de O(N)
       const [propertyMetadata] = metadata.filter(
         (metadata) => metadata.name === property,
       );

@@ -1,12 +1,11 @@
 import { PipeTransform, Type } from '@nestjs/common';
 import { Args } from '@nestjs/graphql';
+import { extendArrayMetadata } from '@nestjs/common/utils/extend-metadata.util';
 
 import { FilterArgsOptions } from '../types/filter-args-options';
 
-import { getFilterOf } from '../utils';
-import { getOptionsOrPipes } from '../utils/get-options-and-pipes';
+import { getFilterOf, getOptionsOrPipes } from '../utils';
 import { NestFilterModule } from '../module';
-import { extendArrayMetadata } from '@nestjs/common/utils/extend-metadata.util';
 import { FILTER_PIPES } from '../constants';
 import { FilterPipeMetadata } from '../types/filter-pipe-metadata';
 
