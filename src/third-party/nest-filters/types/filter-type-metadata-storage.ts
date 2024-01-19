@@ -59,6 +59,7 @@ export class FilterTypeMetadataStorage {
     for (const [dependent, fields] of dependents.entries()) {
       for (const field of fields) {
         field.type = () => filterType;
+        field.originalType = target;
         FilterTypeBuilder.applyField(dependent, field);
         this.dependencyStorage.deleteByValue(field);
       }

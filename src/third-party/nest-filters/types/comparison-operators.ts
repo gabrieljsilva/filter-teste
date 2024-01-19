@@ -1,4 +1,4 @@
-export enum FILTER_OPERATOR {
+export enum COMPARISON_OPERATOR {
   is = 'is',
   like = 'like',
   gt = 'gt',
@@ -6,7 +6,4 @@ export enum FILTER_OPERATOR {
   gte = 'gte',
   lte = 'lte',
   in = 'in',
-  _not = '_not',
-  _and = '_and',
-  _or = '_or',
 }

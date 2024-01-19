@@ -1,4 +1,4 @@
 export { FilterableEntity, FilterableField, FilterArgs } from './decorators';
 export { FilterOf } from './types/filter-of.type';
-export { FILTER_OPERATOR } from './types/filter-operators';
+export { COMPARISON_OPERATOR } from './types/comparison-operators';
 export { getFilterOf } from './utils';

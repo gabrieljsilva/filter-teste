@@ -54,14 +54,9 @@ export class UserService {
     });
   }
 
-  async findUsers(filters: FilterOf<User>) {
-    // -> Deixar o usuário criar as funções e expor o método getFieldMetadataByTarget = Sem serialização automatica;
-    // -> Criar um pipe factory para vincular um parser à um entidade = Criar um pipe por target
-
+  async findUsers(filters: Prisma.UserWhereInput) {
     return this.prisma.user.findMany({
-      where: {
-        deletedAt: null,
-      },
+      where: filters,
     });
   }
 

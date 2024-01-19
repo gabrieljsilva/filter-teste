@@ -29,6 +29,8 @@ export function FilterableEntity(name?: string) {
           name: '_not',
           originalName: '_not',
           type: () => notFilterInputType,
+          originalType: target,
+          isPrimitiveType: false,
         }),
       )
       .addDynamicField(
@@ -37,14 +39,18 @@ export function FilterableEntity(name?: string) {
             name: '_and',
             originalName: '_and',
             type: () => [inputType],
+            originalType: target,
+            isPrimitiveType: false,
           }),
       )
       .addDynamicField(
         (inputType) =>
           new FieldMetadata({
             name: '_or',
-            originalName: '_and',
+            originalName: '_or',
             type: () => [inputType],
+            originalType: target,
+            isPrimitiveType: false,
           }),
       );
 

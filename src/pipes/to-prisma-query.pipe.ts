@@ -1,15 +1,13 @@
 import { PipeTransform, Type } from '@nestjs/common';
 
-import { FILTER_OPERATOR } from '../third-party/nest-filters';
+import { COMPARISON_OPERATOR } from '../third-party/nest-filters';
 import { FilterOf } from '../third-party/nest-filters';
 import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
-import {
-  getOriginalTypeByFilter,
-  getFieldMetadata,
-} from '../third-party/nest-filters/utils';
+import { getFieldMetadata } from '../third-party/nest-filters/utils';
 
 export class ToPrismaQueryPipe implements PipeTransform {
   private readonly type: Type;
+
   constructor(type: Type) {
     if (!type) {
       throw new Error(
@@ -27,35 +25,64 @@ export class ToPrismaQueryPipe implements PipeTransform {
   private getWhereInputQuery(
     filter: FilterOf<unknown>,
     metadata: Array<FieldMetadata>,
+    query = {},
   ) {
-    const query = {};
-
     for (const [property, fieldFilters] of Object.entries(filter)) {
+      // Otimizar o desempenho em runtime indexando os metadados pelo "name"
+      // * Isso aumentaria o uso de RAM e diminuiria o uso do processador por requisição
+      // * Diminuir iterações com complixidade O(1) ao invés de O(N)
       const [propertyMetadata] = metadata.filter(
-        (metadata) => metadata.originalName === property,
+        (metadata) => metadata.name === property,
       );
 
-      // console.log(propertyMetadata.originalType);
+      if (!propertyMetadata.isPrimitiveType) {
+        const fieldMetadata = getFieldMetadata(propertyMetadata.originalType);
 
-      // console.log(originalType);
+        let queryProperty = property;
 
-      // Consertar a tipagem dos métodos do FilterMetadataStorage
+        if (property === '_not') {
+          queryProperty = 'NOT';
+        }
 
-      // Otimizar o desempenho em runtime indexando os metadados pelo "originalName"
-      //// Isso aumentaria o uso de RAM e diminuiria o uso do processador por requisição
-      //// Diminuir iterações com complixidade O(1) ao invés de O(N)
+        if (property === '_and') {
+          queryProperty = 'AND';
+        }
 
-      // Talvez Adicionar o tipo original na classe FieldMetadata?
-      //// Isso aumentaria o uso de RAM e diminuiria o uso do processador por requisição
-      //// Diminuir iterações com complixidade O(1) ao invés de O(N)
+        if (property === '_or') {
+          queryProperty = 'OR';
+        }
+
+        if (Array.isArray(fieldFilters)) {
+          const items = [];
+          for (const fieldFilter of fieldFilters) {
+            const parsed = this.getWhereInputQuery(
+              fieldFilter,
+              fieldMetadata,
+              {},
+            );
+            items.push(parsed);
+          }
+          query[queryProperty] = items;
+
+          continue;
+        }
+
+        query[queryProperty] = {};
+        this.getWhereInputQuery(
+          fieldFilters as FilterOf<any>,
+          fieldMetadata,
+          query[queryProperty],
+        );
+        continue;
+      }
 
       for (const [operation, value] of Object.entries(fieldFilters)) {
-        if (operation === FILTER_OPERATOR.is) {
+        if (operation === COMPARISON_OPERATOR.is) {
           query[property] = value;
           continue;
         }
 
-        if (operation === FILTER_OPERATOR.like) {
+        if (operation === COMPARISON_OPERATOR.like) {
           query[property] = {
             contains: value,
             mode: 'insensitive',
@@ -63,39 +90,38 @@ export class ToPrismaQueryPipe implements PipeTransform {
           continue;
         }
 
-        if (operation === FILTER_OPERATOR.in) {
+        if (operation === COMPARISON_OPERATOR.in) {
           query[property] = {
             in: value,
           };
           continue;
         }
 
-        if (operation === FILTER_OPERATOR.gt) {
+        if (operation === COMPARISON_OPERATOR.gt) {
           query[property] = {
             gt: value,
           };
           continue;
         }
 
-        if (operation === FILTER_OPERATOR.lt) {
+        if (operation === COMPARISON_OPERATOR.lt) {
           query[property] = {
             lt: value,
           };
           continue;
         }
 
-        if (operation === FILTER_OPERATOR.gte) {
+        if (operation === COMPARISON_OPERATOR.gte) {
           query[property] = {
             gte: value,
           };
           continue;
         }
 
-        if (operation === FILTER_OPERATOR.lte) {
+        if (operation === COMPARISON_OPERATOR.lte) {
           query[property] = {
             lte: value,
           };
-          continue;
         }
       }
     }

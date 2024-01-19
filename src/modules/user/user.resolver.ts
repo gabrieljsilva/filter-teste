@@ -7,7 +7,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 
-import { FilterArgs, FilterOf } from '../../third-party/nest-filters';
+import { FilterArgs } from '../../third-party/nest-filters';
 
 import { PrismaService } from '../../infra';
 import { UserService } from './user.service';
@@ -15,6 +15,7 @@ import { UserService } from './user.service';
 import { User, Photo, Credentials } from '../../models';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { ToPrismaQueryPipe } from '../../pipes';
+import { Prisma } from '@prisma/client';
 
 @Resolver(User)
 export class UserResolver {
@@ -41,9 +42,8 @@ export class UserResolver {
   @Query(() => [User])
   async findUsers(
     @FilterArgs(User, ToPrismaQueryPipe)
-    userFilter: FilterOf<User>,
+    userFilter: Prisma.UserWhereInput,
   ) {
-    console.log(userFilter);
     return this.userService.findUsers(userFilter);
   }
 

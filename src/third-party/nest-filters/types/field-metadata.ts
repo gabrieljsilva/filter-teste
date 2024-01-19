@@ -12,14 +12,16 @@ export class FieldMetadata {
   originalName: string;
   type: FieldTypeFN;
   originalType?: Type;
+  isPrimitiveType: boolean;
   options?: FieldMetadataOptions;
 
   constructor(metadata: Omit<FieldMetadata, 'getType' | 'isFieldLoaded'>) {
     this.name = metadata.name;
     this.originalName = metadata.originalName;
     this.type = metadata.type;
-    this.options = metadata.options;
     this.originalType = metadata.originalType;
+    this.isPrimitiveType = metadata.isPrimitiveType;
+    this.options = metadata.options;
   }
 
   getType() {

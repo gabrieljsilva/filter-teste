@@ -43,6 +43,7 @@ export class FilterTypeBuilder {
 
   addField(field: FieldMetadata) {
     this.fields.push(field);
+    FilterTypeMetadataStorage.addFieldMetadata(this.target, field);
     return this;
   }
 
@@ -68,12 +69,13 @@ export class FilterTypeBuilder {
       value: this.name,
     });
 
-    this.fields?.forEach((field) =>
-      FilterTypeBuilder.applyField(FilterInputType, field),
-    );
+    this.fields?.forEach((field) => {
+      FilterTypeBuilder.applyField(FilterInputType, field);
+    });
 
     this.dynamicFields.forEach((dynamicField) => {
       const field = dynamicField(FilterInputType);
+      FilterTypeMetadataStorage.addFieldMetadata(this.target, field);
       FilterTypeBuilder.applyField(FilterInputType, field);
     });
 

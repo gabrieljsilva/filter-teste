@@ -8,6 +8,7 @@ import { isFunction } from '@nestjs/common/utils/shared.utils';
 import { FieldMetadata } from '../types/field-metadata';
 import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
 import { Type } from '@nestjs/common';
+import { primitiveTypes } from '../constants';
 
 export type FieldOptions = {
   name?: string;
@@ -51,6 +52,7 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
       ignoreOnUndefinedType: false,
     });
 
+    // Refatorar esse código para trabalhar apenas com o "Target" Original e só converter em "FilterType" após chegar no processo de "buildar" a entidade
     const fieldType = typeFn();
     const fieldFilterType =
       FilterTypeMetadataStorage.getFilterTypeByTarget(fieldType);
@@ -63,6 +65,7 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
         type: fieldFilterType ? () => fieldFilterType : () => fieldType,
         originalType: fieldType as Type,
         options: options,
+        isPrimitiveType: primitiveTypes.has(fieldType as Type),
       }),
     );
   };
