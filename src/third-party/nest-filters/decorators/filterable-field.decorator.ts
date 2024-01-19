@@ -53,7 +53,6 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
       ignoreOnUndefinedType: false,
     });
 
-    // Refatorar esse código para trabalhar apenas com o "Target" Original e só converter em "FilterType" após chegar no processo de "buildar" a entidade
     const fieldType = typeFn();
     const fieldFilterType =
       FilterTypeMetadataStorage.getFilterTypeByTarget(fieldType);
