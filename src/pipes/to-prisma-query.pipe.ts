@@ -3,7 +3,7 @@ import { PipeTransform, Type } from '@nestjs/common';
 import { COMPARISON_OPERATOR } from '../third-party/nest-filters';
 import { FilterOf } from '../third-party/nest-filters';
 import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
-import { getFieldMetadata } from '../third-party/nest-filters/utils';
+import { FilterTypeMetadataStorage } from '../third-party/nest-filters/types/filter-type-metadata-storage';
 
 export class ToPrismaQueryPipe implements PipeTransform {
   private readonly type: Type;
@@ -14,6 +14,7 @@ export class ToPrismaQueryPipe implements PipeTransform {
         `Cannot determine type for pipe ${ToPrismaQueryPipe.name}`,
       );
     }
+
     this.type = type;
   }
 
@@ -22,22 +23,25 @@ export class ToPrismaQueryPipe implements PipeTransform {
       return {};
     }
 
-    const fieldMetadata = getFieldMetadata(this.type);
+    const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
+      this.type,
+    );
+
     return this.getWhereInputQuery(value, fieldMetadata);
   }
 
   private getWhereInputQuery(
     filter: FilterOf<unknown>,
-    metadata: Array<FieldMetadata>,
+    metadata: Map<string, FieldMetadata>,
     query = {},
   ) {
     for (const [property, fieldFilters] of Object.entries(filter)) {
-      const [propertyMetadata] = metadata.filter(
-        (metadata) => metadata.name === property,
-      );
+      const propertyMetadata = metadata.get(property);
 
       if (!propertyMetadata.isPrimitiveType) {
-        const fieldMetadata = getFieldMetadata(propertyMetadata.originalType);
+        const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
+          propertyMetadata.originalType,
+        );
 
         let queryProperty = property;
 

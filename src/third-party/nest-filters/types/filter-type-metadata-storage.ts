@@ -7,6 +7,7 @@ import { FieldMetadata } from './field-metadata';
 import { DependencyStorage } from './dependency-storage';
 import { MultiMap } from './multimap';
 import { FilterTypeBuilder } from './filter-type-builder';
+import { mapBy } from '../utils';
 
 export class FilterTypeMetadataStorage {
   private static dependencyStorage = new DependencyStorage();
@@ -20,6 +21,11 @@ export class FilterTypeMetadataStorage {
     FieldMetadata
   >();
 
+  private static typeFieldsMapIndexedByName = new Map<
+    Type | Function,
+    Map<string, FieldMetadata>
+  >();
+
   public static setFilterType(target: Type, filterType: Type) {
     this.filterTypesByScalar.set(target, filterType);
   }
@@ -30,10 +36,6 @@ export class FilterTypeMetadataStorage {
 
   public static getFilterTypeByTarget(target: GqlTypeReference) {
     return this.filterTypesByScalar.getValueByKey(target);
-  }
-
-  public static getTypeByFilterType(filterType: Type) {
-    return this.filterTypesByScalar.getKeyByValue(filterType);
   }
 
   public static addFieldMetadata(
@@ -50,6 +52,18 @@ export class FilterTypeMetadataStorage {
   ): Array<FieldMetadata> {
     const values = this.fieldMetadataStorage.getValuesByKey(target);
     return values ? Array.from(values) : [];
+  }
+
+  public static getIndexedFieldsByType(type: Type) {
+    return this.typeFieldsMapIndexedByName.get(type);
+  }
+
+  public static indexFieldsByName() {
+    const typeFieldsMap = this.fieldMetadataStorage.entries();
+    for (const [type, fields] of typeFieldsMap) {
+      const mappedFields = mapBy(fields, 'name');
+      this.typeFieldsMapIndexedByName.set(type, mappedFields);
+    }
   }
 
   public static onEntityLoaded(target: Type) {
