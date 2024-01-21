@@ -8,6 +8,7 @@ import { NestFilterModule } from './third-party/nest-filters/module';
 import { PrismaModule } from './infra';
 import { UserModule } from './modules';
 import { AuthModule } from './modules/auth/auth.module';
+import { formatError } from './utils';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from './modules/auth/auth.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'schema.gql'),
+      formatError,
     }),
     NestFilterModule.register(),
     AuthModule,

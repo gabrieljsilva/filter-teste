@@ -1,4 +1,4 @@
-import { PipeTransform, Type } from '@nestjs/common';
+import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
 
 import { COMPARISON_OPERATOR } from '../third-party/nest-filters';
 import { FilterOf } from '../third-party/nest-filters';
@@ -18,10 +18,8 @@ export class ToPrismaQueryPipe implements PipeTransform {
     this.type = type;
   }
 
-  transform(value: FilterOf<unknown>): any {
-    if (!value) {
-      return {};
-    }
+  async transform(value: FilterOf<unknown>) {
+    if (!value) return {};
 
     const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
       this.type,
@@ -81,56 +79,76 @@ export class ToPrismaQueryPipe implements PipeTransform {
         continue;
       }
 
-      for (const [operation, value] of Object.entries(fieldFilters)) {
-        if (operation === COMPARISON_OPERATOR.is) {
-          query[property] = value;
-          continue;
-        }
-
-        if (operation === COMPARISON_OPERATOR.like) {
-          query[property] = {
-            contains: value,
-            mode: 'insensitive',
-          };
-          continue;
-        }
-
-        if (operation === COMPARISON_OPERATOR.in) {
-          query[property] = {
-            in: value,
-          };
-          continue;
-        }
-
-        if (operation === COMPARISON_OPERATOR.gt) {
-          query[property] = {
-            gt: value,
-          };
-          continue;
-        }
-
-        if (operation === COMPARISON_OPERATOR.lt) {
-          query[property] = {
-            lt: value,
-          };
-          continue;
-        }
-
-        if (operation === COMPARISON_OPERATOR.gte) {
-          query[property] = {
-            gte: value,
-          };
-          continue;
-        }
-
-        if (operation === COMPARISON_OPERATOR.lte) {
-          query[property] = {
-            lte: value,
-          };
-        }
-      }
+      this.getComparisonQuery(
+        fieldFilters as FilterOf<unknown>,
+        propertyMetadata,
+        query,
+      );
     }
 
     return query;
+  }
+
+  private getComparisonQuery(
+    filters: FilterOf<unknown>,
+    propertyMetadata: FieldMetadata,
+    query = {},
+  ) {
+    const isFieldNullable = !!propertyMetadata.options.nullable;
+
+    for (const [operation, value] of Object.entries(filters)) {
+      if (!isFieldNullable && value === null) {
+        throw new BadRequestException(
+          `field ${propertyMetadata.name} cannot be null`,
+        );
+      }
+
+      if (operation === COMPARISON_OPERATOR.is) {
+        query[propertyMetadata.name] = value;
+        continue;
+      }
+
+      if (operation === COMPARISON_OPERATOR.like) {
+        query[propertyMetadata.name] = {
+          contains: value,
+          mode: 'insensitive',
+        };
+        continue;
+      }
+
+      if (operation === COMPARISON_OPERATOR.in) {
+        query[propertyMetadata.name] = {
+          in: value,
+        };
+        continue;
+      }
+
+      if (operation === COMPARISON_OPERATOR.gt) {
+        query[propertyMetadata.name] = {
+          gt: value,
+        };
+        continue;
+      }
+
+      if (operation === COMPARISON_OPERATOR.lt) {
+        query[propertyMetadata.name] = {
+          lt: value,
+        };
+        continue;
+      }
+
+      if (operation === COMPARISON_OPERATOR.gte) {
+        query[propertyMetadata.name] = {
+          gte: value,
+        };
+        continue;
+      }
+
+      if (operation === COMPARISON_OPERATOR.lte) {
+        query[propertyMetadata.name] = {
+          lte: value,
+        };
+      }
+    }
   }
 }

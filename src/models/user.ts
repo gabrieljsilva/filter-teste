@@ -1,9 +1,8 @@
-import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
 
 import { Photo } from './photo';
 import { Credentials } from './credentials';
-import { DateTimeFilter } from '../third-party/nest-filters/filters';
 
 @FilterableEntity()
 @ObjectType()
@@ -20,16 +19,13 @@ export class User {
   @FilterableField()
   birthDate: Date;
 
-  @FilterableField()
-  likes: number;
-
   @Field()
   @FilterableField()
   createdAt: Date;
 
   @Field({ nullable: true })
-  @FilterableField()
-  deletedAt: Date;
+  @FilterableField({ nullable: true })
+  deletedAt?: Date;
 
   @Field(() => [Photo])
   @FilterableField(() => [Photo])

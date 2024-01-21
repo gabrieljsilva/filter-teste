@@ -47,7 +47,6 @@ input UserFilter {
   id: IdFilter
   name: StringFilter
   birthDate: DateTimeFilter
-  likes: FloatFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
   photos: PhotoFilter
@@ -74,15 +73,6 @@ input DateTimeFilter {
   lt: DateTime
   gte: DateTime
   lte: DateTime
-}
-
-input FloatFilter {
-  is: Float
-  in: [Float]
-  gt: Float
-  lt: Float
-  gte: Float
-  lte: Float
 }
 
 input PhotoFilter {
@@ -141,7 +131,6 @@ input NotUserFilter {
   id: IdFilter
   name: StringFilter
   birthDate: DateTimeFilter
-  likes: FloatFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
   photos: PhotoFilter

@@ -14,6 +14,7 @@ import { primitiveTypes } from '../constants';
 export type FieldOptions = {
   name?: string;
   description?: string;
+  nullable?: boolean;
 };
 
 export type FieldOptionsExtractor<T> = T extends [GqlTypeReference]
