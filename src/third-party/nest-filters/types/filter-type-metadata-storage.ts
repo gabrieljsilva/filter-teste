@@ -17,12 +17,12 @@ export class FilterTypeMetadataStorage {
   >(filterTypeMap);
 
   private static fieldMetadataStorage = new MultiMap<
-    Type | Function,
+    GqlTypeReference,
     FieldMetadata
   >();
 
   private static typeFieldsMapIndexedByName = new Map<
-    Type | Function,
+    GqlTypeReference,
     Map<string, FieldMetadata>
   >();
 
@@ -39,7 +39,7 @@ export class FilterTypeMetadataStorage {
   }
 
   public static addFieldMetadata(
-    target: Type | Function,
+    target: GqlTypeReference,
     field: FieldMetadata,
   ) {
     const fields = this.getFieldMetadataByTarget(target);
@@ -48,13 +48,13 @@ export class FilterTypeMetadataStorage {
   }
 
   public static getFieldMetadataByTarget(
-    target: Type | Function,
+    target: GqlTypeReference,
   ): Array<FieldMetadata> {
     const values = this.fieldMetadataStorage.getValuesByKey(target);
     return values ? Array.from(values) : [];
   }
 
-  public static getIndexedFieldsByType(type: Type) {
+  public static getIndexedFieldsByType(type: GqlTypeReference) {
     return this.typeFieldsMapIndexedByName.get(type);
   }
 

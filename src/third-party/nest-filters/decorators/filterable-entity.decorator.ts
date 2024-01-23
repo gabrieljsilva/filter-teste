@@ -1,6 +1,7 @@
 import { FieldMetadata } from '../types/field-metadata';
 import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
 import { FilterTypeBuilder } from '../types/filter-type-builder';
+import { LOGICAL_OPERATORS } from '../types/logical-operations';
 
 export function FilterableEntity(name?: string) {
   return (target: NonNullable<any>) => {
@@ -26,8 +27,8 @@ export function FilterableEntity(name?: string) {
       .setFields(fields)
       .addField(
         new FieldMetadata({
-          name: '_not',
-          originalName: '_not',
+          name: LOGICAL_OPERATORS._not,
+          originalName: LOGICAL_OPERATORS._not,
           type: () => notFilterInputType,
           originalType: target,
           isPrimitiveType: false,
@@ -36,8 +37,8 @@ export function FilterableEntity(name?: string) {
       .addDynamicField(
         (inputType) =>
           new FieldMetadata({
-            name: '_and',
-            originalName: '_and',
+            name: LOGICAL_OPERATORS._and,
+            originalName: LOGICAL_OPERATORS._and,
             type: () => [inputType],
             originalType: target,
             isPrimitiveType: false,
@@ -46,8 +47,8 @@ export function FilterableEntity(name?: string) {
       .addDynamicField(
         (inputType) =>
           new FieldMetadata({
-            name: '_or',
-            originalName: '_or',
+            name: LOGICAL_OPERATORS._or,
+            originalName: LOGICAL_OPERATORS._or,
             type: () => [inputType],
             originalType: target,
             isPrimitiveType: false,

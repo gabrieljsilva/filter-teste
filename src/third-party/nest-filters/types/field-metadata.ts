@@ -11,7 +11,7 @@ export class FieldMetadata {
   name: string;
   originalName: string;
   type: FieldTypeFN;
-  originalType?: Type;
+  originalType?: GqlTypeReference;
   isPrimitiveType: boolean;
   options?: FieldMetadataOptions;
 

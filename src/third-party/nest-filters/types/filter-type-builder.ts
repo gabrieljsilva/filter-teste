@@ -43,7 +43,6 @@ export class FilterTypeBuilder {
 
   addField(field: FieldMetadata) {
     this.fields.push(field);
-    FilterTypeMetadataStorage.addFieldMetadata(this.target, field);
     return this;
   }
 
@@ -70,6 +69,7 @@ export class FilterTypeBuilder {
     });
 
     this.fields?.forEach((field) => {
+      FilterTypeMetadataStorage.addFieldMetadata(this.target, field);
       FilterTypeBuilder.applyField(FilterInputType, field);
     });
 

@@ -1,154 +1,140 @@
-import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
+import {
+  BadRequestException,
+  mixin,
+  PipeTransform,
+  Type,
+} from '@nestjs/common';
 
-import { COMPARISON_OPERATOR } from '../third-party/nest-filters';
-import { FilterOf } from '../third-party/nest-filters';
+import { COMPARISON_OPERATOR, FilterOf } from '../third-party/nest-filters';
+import { LOGICAL_OPERATORS } from '../third-party/nest-filters/types/logical-operations';
 import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
 import { FilterTypeMetadataStorage } from '../third-party/nest-filters/types/filter-type-metadata-storage';
+import { memoize } from '../utils';
 
-export class ToPrismaQueryPipe implements PipeTransform {
-  private readonly type: Type;
+const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
+  [LOGICAL_OPERATORS._and]: 'AND',
+  [LOGICAL_OPERATORS._or]: 'OR',
+  [LOGICAL_OPERATORS._not]: 'NOT',
+};
 
-  constructor(type: Type) {
-    if (!type) {
-      throw new Error(
-        `Cannot determine type for pipe ${ToPrismaQueryPipe.name}`,
-      );
+type QueryBuilderByOperationsMap = Record<COMPARISON_OPERATOR, Function>;
+
+export const ToPrismaQueryPipe = memoize<(type: Type) => PipeTransform>(
+  createToPrismaQueryPipe,
+);
+
+function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
+  class ToPrismaQueryPipe implements PipeTransform {
+    queryBuilderByOperationMap: QueryBuilderByOperationsMap = {
+      is: this.getIsOperator,
+      like: this.getLikeOperator,
+      in: this.getInOperator,
+      gt: this.getGtOperator,
+      lt: this.getLtOperator,
+      gte: this.getGteOperator,
+      lte: this.getLteOperator,
+    };
+
+    async transform<T = unknown>(value: FilterOf<T>) {
+      if (!value) return {};
+
+      const fieldMetadata =
+        FilterTypeMetadataStorage.getIndexedFieldsByType(type);
+
+      return this.getWhereInputQuery(value, fieldMetadata);
     }
 
-    this.type = type;
-  }
+    getWhereInputQuery(
+      filter: FilterOf<unknown>,
+      metadata: Map<string, FieldMetadata>,
+      query = {},
+    ) {
+      Object.entries(filter).forEach(([property, fieldFilters]) => {
+        const propertyMetadata = metadata.get(property);
 
-  async transform(value: FilterOf<unknown>) {
-    if (!value) return {};
+        if (propertyMetadata.isPrimitiveType) {
+          this.getComparisonQuery(
+            fieldFilters as FilterOf<unknown>,
+            propertyMetadata,
+            query,
+          );
+          return;
+        }
 
-    const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
-      this.type,
-    );
+        const queryProperty =
+          clientToPrismaLogicalOperators[property] ?? property;
 
-    return this.getWhereInputQuery(value, fieldMetadata);
-  }
-
-  private getWhereInputQuery(
-    filter: FilterOf<unknown>,
-    metadata: Map<string, FieldMetadata>,
-    query = {},
-  ) {
-    for (const [property, fieldFilters] of Object.entries(filter)) {
-      const propertyMetadata = metadata.get(property);
-
-      if (!propertyMetadata.isPrimitiveType) {
         const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
           propertyMetadata.originalType,
         );
 
-        let queryProperty = property;
-
-        if (property === '_not') {
-          queryProperty = 'NOT';
-        }
-
-        if (property === '_and') {
-          queryProperty = 'AND';
-        }
-
-        if (property === '_or') {
-          queryProperty = 'OR';
-        }
-
         if (Array.isArray(fieldFilters)) {
-          const items = [];
-          for (const fieldFilter of fieldFilters) {
-            const parsed = this.getWhereInputQuery(
-              fieldFilter,
-              fieldMetadata,
-              {},
-            );
-            items.push(parsed);
-          }
-          query[queryProperty] = items;
-
-          continue;
+          query[queryProperty] = fieldFilters.map((item) =>
+            this.getWhereInputQuery(item, fieldMetadata, {}),
+          );
+          return;
         }
 
-        query[queryProperty] = {};
-        this.getWhereInputQuery(
+        query[queryProperty] = this.getWhereInputQuery(
           fieldFilters as FilterOf<any>,
           fieldMetadata,
-          query[queryProperty],
+          {},
         );
-        continue;
-      }
+      });
 
-      this.getComparisonQuery(
-        fieldFilters as FilterOf<unknown>,
-        propertyMetadata,
-        query,
-      );
+      return query;
     }
 
-    return query;
-  }
+    getComparisonQuery(
+      filters: FilterOf<unknown>,
+      metadata: FieldMetadata,
+      query = {},
+    ) {
+      const isFieldNullable = !!metadata.options.nullable;
 
-  private getComparisonQuery(
-    filters: FilterOf<unknown>,
-    propertyMetadata: FieldMetadata,
-    query = {},
-  ) {
-    const isFieldNullable = !!propertyMetadata.options.nullable;
+      Object.entries(filters).forEach(([operation, value]) => {
+        if (!isFieldNullable && value === null) {
+          throw new BadRequestException(
+            `field ${metadata.name} cannot be null`,
+          );
+        }
+        const queryFN = this.getQueryFN(operation as COMPARISON_OPERATOR);
+        Object.assign(query, queryFN(metadata, value as FilterOf<unknown>));
+      });
+    }
 
-    for (const [operation, value] of Object.entries(filters)) {
-      if (!isFieldNullable && value === null) {
-        throw new BadRequestException(
-          `field ${propertyMetadata.name} cannot be null`,
-        );
-      }
+    getQueryFN(operation: COMPARISON_OPERATOR) {
+      return this.queryBuilderByOperationMap[operation];
+    }
 
-      if (operation === COMPARISON_OPERATOR.is) {
-        query[propertyMetadata.name] = value;
-        continue;
-      }
+    getIsOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: value };
+    }
 
-      if (operation === COMPARISON_OPERATOR.like) {
-        query[propertyMetadata.name] = {
-          contains: value,
-          mode: 'insensitive',
-        };
-        continue;
-      }
+    getLikeOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: { contains: value, mode: 'insensitive' } };
+    }
 
-      if (operation === COMPARISON_OPERATOR.in) {
-        query[propertyMetadata.name] = {
-          in: value,
-        };
-        continue;
-      }
+    getInOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: { in: value } };
+    }
 
-      if (operation === COMPARISON_OPERATOR.gt) {
-        query[propertyMetadata.name] = {
-          gt: value,
-        };
-        continue;
-      }
+    getGtOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: { gt: value } };
+    }
 
-      if (operation === COMPARISON_OPERATOR.lt) {
-        query[propertyMetadata.name] = {
-          lt: value,
-        };
-        continue;
-      }
+    getGteOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: { gte: value } };
+    }
 
-      if (operation === COMPARISON_OPERATOR.gte) {
-        query[propertyMetadata.name] = {
-          gte: value,
-        };
-        continue;
-      }
+    getLtOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: { lt: value } };
+    }
 
-      if (operation === COMPARISON_OPERATOR.lte) {
-        query[propertyMetadata.name] = {
-          lte: value,
-        };
-      }
+    getLteOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
+      return { [metadata.name]: { lte: value } };
     }
   }
+
+  return mixin(ToPrismaQueryPipe);
 }
