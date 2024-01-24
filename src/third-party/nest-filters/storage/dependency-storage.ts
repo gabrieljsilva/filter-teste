@@ -1,7 +1,6 @@
 import { Type } from '@nestjs/common';
 
-import { MultiMap } from './multimap';
-import { FieldMetadata } from './field-metadata';
+import { MultiMap, FieldMetadata } from '../types';
 
 export class DependencyStorage extends MultiMap<Type, FieldMetadata> {
   public getDependents(target: Type) {

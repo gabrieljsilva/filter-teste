@@ -42,6 +42,7 @@ export class UserResolver {
     @FilterArgs(User, ToPrismaQueryPipe(User))
     userFilter: Prisma.UserWhereInput,
   ) {
+    console.log(userFilter);
     return this.userService.findUsers(userFilter);
   }
 

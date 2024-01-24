@@ -1,1 +1,0 @@
-export const FILTER_PIPES = '__NEST_FILTER:PIPES';

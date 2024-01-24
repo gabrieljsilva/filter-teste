@@ -1,9 +1,9 @@
 import { DynamicModule, OnModuleInit } from '@nestjs/common';
-import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
+import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
 
 export class NestFilterModule implements OnModuleInit {
   onModuleInit() {
-    FilterTypeMetadataStorage.indexFieldsByName();
+    FilterTypeMetadataStorage.mapTypeFieldsByName();
   }
 
   static register(): DynamicModule {

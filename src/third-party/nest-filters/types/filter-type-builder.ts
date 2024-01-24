@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
 import { inheritPropertyInitializers } from '@nestjs/mapped-types';
 import { FieldMetadata } from './field-metadata';
-import { FilterTypeMetadataStorage } from './filter-type-metadata-storage';
+import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
 
 export class FilterTypeBuilder {
   private target: NonNullable<any>;

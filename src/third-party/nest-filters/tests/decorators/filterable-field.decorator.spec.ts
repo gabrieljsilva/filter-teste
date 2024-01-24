@@ -1,6 +1,6 @@
 import { GraphQLTimestamp, ID, Int } from '@nestjs/graphql';
 import { FilterableField } from '../../decorators';
-import { FilterTypeMetadataStorage } from '../../types/filter-type-metadata-storage';
+import { FilterTypeMetadataStorage } from '../../storage/filter-type-metadata-storage';
 import {
   BooleanFilter,
   DateTimeFilter,

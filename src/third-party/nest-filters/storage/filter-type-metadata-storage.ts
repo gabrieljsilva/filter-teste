@@ -2,11 +2,13 @@ import { Type } from '@nestjs/common';
 import { GqlTypeReference } from '@nestjs/graphql';
 
 import { filterTypeMap } from '../constants';
-import { BidirectionalMap } from './bidirectional-map';
-import { FieldMetadata } from './field-metadata';
+import {
+  BidirectionalMap,
+  MultiMap,
+  FieldMetadata,
+  FilterTypeBuilder,
+} from '../types';
 import { DependencyStorage } from './dependency-storage';
-import { MultiMap } from './multimap';
-import { FilterTypeBuilder } from './filter-type-builder';
 import { mapBy } from '../utils';
 
 export class FilterTypeMetadataStorage {
@@ -58,7 +60,7 @@ export class FilterTypeMetadataStorage {
     return this.typeFieldsMapIndexedByName.get(type);
   }
 
-  public static indexFieldsByName() {
+  public static mapTypeFieldsByName() {
     const typeFieldsMap = this.fieldMetadataStorage.entries();
     for (const [type, fields] of typeFieldsMap) {
       const mappedFields = mapBy(fields, 'name');

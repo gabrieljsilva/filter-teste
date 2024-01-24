@@ -6,9 +6,11 @@ import {
 } from '@nestjs/common';
 
 import { COMPARISON_OPERATOR, FilterOf } from '../third-party/nest-filters';
-import { LOGICAL_OPERATORS } from '../third-party/nest-filters/types/logical-operations';
-import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
-import { FilterTypeMetadataStorage } from '../third-party/nest-filters/types/filter-type-metadata-storage';
+import {
+  LOGICAL_OPERATORS,
+  FieldMetadata,
+} from '../third-party/nest-filters/types';
+import { FilterTypeMetadataStorage } from '../third-party/nest-filters/storage/filter-type-metadata-storage';
 import { memoize } from '../utils';
 
 const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
