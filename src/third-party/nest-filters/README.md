@@ -202,47 +202,50 @@ export class User {
 É possivel utilizar pipes para serializar os dados recebidos, ex: 
 
 ```ts
-import { ArgumentMetadata, PipeTransform, Type } from '@nestjs/common';
-import { FilterOf } from '../third-party/nest-filters';
-import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
-import { getFieldMetadata } from '../third-party/nest-filters/utils';
+type QueryBuilderByOperationsMap = Record<COMPARISON_OPERATOR, Function>;
 
-export class ToPrismaQueryPipe implements PipeTransform {
-  private readonly type: Type;
+export const ToPrismaQueryPipe = memoize<(type: Type) => PipeTransform>(
+    createToPrismaQueryPipe,
+);
 
-  constructor(type: Type) {
-    if (!type) {
-      throw new Error(
-        `Cannot determine type for pipe ${ToPrismaQueryPipe.name}`,
-      );
+function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
+    class ToPrismaQueryPipe implements PipeTransform {
+        async transform<T = unknown>(value: FilterOf<T>) {
+            if (!value){
+                return {};
+            }
+            const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(type);
+            return this.getWhereInputQuery(value, fieldMetadata);
+        }
+
+        getWhereInputQuery(
+            filter: FilterOf<unknown>,
+            metadata: Map<string, FieldMetadata>,
+            query = {},
+        ) {
+           // Implements your quere here
+        }
     }
-    this.type = type;
-  }
 
-  transform(value: FilterOf<unknown>, metadata: ArgumentMetadata): any {
-    const fieldMetadata = getFieldMetadata(this.type);
-    return this.getWhereInputQuery(value, fieldMetadata);
-  }
-
-  private getWhereInputQuery(
-    filter: FilterOf<unknown>,
-    metadata: Array<FieldMetadata>,
-  ) {
-      // Transform your data here
-  }
+    return ToPrismaQueryPipe;
 }
 ```
 
-É possível criar pipes mais assertivos usando os metadados extraidos da função `getFieldMetadata`, essa função retorna uma lista de instancias da classe FieldMetadata que contém as seguintes informações:
+Para utilizar pipes com parâmetros, usamos uma função que retorna uma classe, ao usar esse método, para cada implementação de filtro por tipo, um novo pipe é criado.
+Para evitar essa redundancia de criação de pipes, é possivel utilizar memoização para usar sempre o mesmo pipe mesmo que seja implementado em várias queries diferentes.
+
+É possível criar pipes mais assertivos usando os metadados extraidos da função `getFieldMetadata`, essa função retorna uma lista de instâncias da classe FieldMetadata que contém as seguintes informações:
 
 `FieldMetadata`
 
-| property     | type                 | description                                |
-|--------------|----------------------|--------------------------------------------|
-| name         | string               | Nome da propriedade                        |
-| originalName | string               | Referência do nome original da propriedade |
-| type         | Function             | Função que retorna o tipo da propriedade   |
-| options      | FieldMetadataOptions | Objeto com algumas opções customizadas     |
+| property        | type                 | description                                       |
+|-----------------|----------------------|---------------------------------------------------|
+| name            | string               | Nome da propriedade                               |
+| originalName    | string               | Referência do nome original da propriedade        |
+| type            | Function             | Função que retorna o tipo da propriedade          |
+| originalType    | Function             | Função que retorna o tipo original da propriedade |
+| isPrimitiveType | Boolean              | True caso seja um tipo primitivo                  |
+| options         | FieldMetadataOptions | Objeto com algumas opções customizadas            |
 
 `FieldMetadataOptions`
 
@@ -265,61 +268,10 @@ export class UserResolver {
     constructor(private readonly userService: UserService) {}
     
     @Query(() => [User])
-    async findUsers(@FilterArgs(User, ToPrismaQueryPipe) userFilter: FilterOf<User>) {
+    async findUsers(@FilterArgs(User, ToPrismaQueryPipe(User)) userFilter: FilterOf<User>) {
         return this.userService.findUsers(userFilter);
     }
 }
-````
-
-O decorator se encarrega de injetar o tipo como primeiro parâmetro do construtor do pipe, mas também é possível injetar manualmente da seguinte forma:
-
-````ts
-import { ToPrismaQueryPipe } from '../../pipes';
-
-@Resolver(User)
-export class UserResolver {
-    constructor(private readonly userService: UserService) {}
-    
-    @Query(() => [User])
-    async findUsers(@FilterArgs(User, new ToPrismaQueryPipe(User)) userFilter: FilterOf<User>) {
-        return this.userService.findUsers(userFilter);
-    }
-}
-````
-
-Não é produtivo injetar o pipe em cada query que formos utilizar, então é possível injetar pipes de forma global:
-Para fazer isso é necessário importar o módulo `GraphQLFilterModule`, ex:
-
-````ts
-@Module({
-  imports: [
-    PrismaModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      ...
-    }),
-    NestFilterModule.register(),
-    UserModule,
-  ],
-})
-export class AppModule {}
-````
-
-E no arquivo `main.ts` extraia a instancia do módulo e chame o método ```applyPipes``` e passe os seus pipes;
-ex:
-````ts
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { NestFilterModule } from './third-party/nest-filters/module';
-import { ToPrismaQueryPipe } from './pipes';
-
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const nestFilterModule = app.get(NestFilterModule, ...OtherPipes);
-  nestFilterModule.applyPipes(ToPrismaQueryPipe);
-  await app.listen(3000);
-}
-
-bootstrap();
 ````
 
 ## Customização
@@ -339,5 +291,9 @@ export class User {
   // Define nos metadados que esse campo é um array de um tipo especifico
   @FilterableField(() => [Photo])
   photo: Photo[]
+    
+  // Define o tipo explicitamente e as opções 
+  @FilterableField(() => Address, { name: 'myAddress' })
+  photo: Address
 }
 ```
