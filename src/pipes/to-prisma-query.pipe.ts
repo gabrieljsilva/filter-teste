@@ -1,12 +1,11 @@
 import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
 
 import { COMPARISON_OPERATOR, FilterOf } from '../third-party/nest-filters';
-import {
-  LOGICAL_OPERATORS,
-  FieldMetadata,
-} from '../third-party/nest-filters/types';
+
 import { FilterTypeMetadataStorage } from '../third-party/nest-filters/storage/filter-type-metadata-storage';
 import { memoize } from '../utils';
+import { LOGICAL_OPERATORS } from '../third-party/nest-filters/types/logical-operations';
+import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
 
 const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
   [LOGICAL_OPERATORS._and]: 'AND',

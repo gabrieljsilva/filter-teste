@@ -1,8 +1,8 @@
 import { PipeTransform, Type } from '@nestjs/common';
 import { Args } from '@nestjs/graphql';
 
-import { FilterArgsOptions } from '../types';
 import { getFilterOf, getOptionsOrPipes } from '../utils';
+import { FilterArgsOptions } from '../types/filter-args-options';
 
 export function FilterArgs(type: Type, options?: FilterArgsOptions);
 export function FilterArgs(
@@ -26,10 +26,12 @@ export function FilterArgs(
   );
 
   return (target: NonNullable<any>, key: string, index: number) => {
+    const filterType = getFilterOf(type);
+
     Args(
       options.name,
       {
-        type: () => getFilterOf(type),
+        type: () => filterType,
         name: options.name,
         description: options?.description,
         nullable: true,

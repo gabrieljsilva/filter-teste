@@ -6,9 +6,9 @@ import {
 import { isFunction } from '@nestjs/common/utils/shared.utils';
 import { reflectTypeFromMetadata } from '@nestjs/graphql/dist/utils/reflection.utilts';
 
-import { FieldMetadata } from '../types';
 import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
 import { primitiveTypes } from '../constants';
+import { FieldMetadata } from '../types/field-metadata';
 
 export type FieldOptions = {
   name?: string;

@@ -2,14 +2,12 @@ import { Type } from '@nestjs/common';
 import { GqlTypeReference } from '@nestjs/graphql';
 
 import { filterTypeMap } from '../constants';
-import {
-  BidirectionalMap,
-  MultiMap,
-  FieldMetadata,
-  FilterTypeBuilder,
-} from '../types';
 import { DependencyStorage } from './dependency-storage';
 import { mapBy } from '../utils';
+import { BidirectionalMap } from '../types/bidirectional-map';
+import { MultiMap } from '../types/multimap';
+import { FieldMetadata } from '../types/field-metadata';
+import { FilterTypeBuilder } from '../types/filter-type-builder';
 
 export class FilterTypeMetadataStorage {
   private static dependencyStorage = new DependencyStorage();

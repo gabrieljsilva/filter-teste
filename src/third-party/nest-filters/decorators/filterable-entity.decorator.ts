@@ -1,5 +1,7 @@
-import { FieldMetadata, LOGICAL_OPERATORS, FilterTypeBuilder } from '../types';
 import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
+import { FilterTypeBuilder } from '../types/filter-type-builder';
+import { LOGICAL_OPERATORS } from '../types/logical-operations';
+import { FieldMetadata } from '../types/field-metadata';
 
 export function FilterableEntity(name?: string) {
   return (target: NonNullable<any>) => {
