@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  mixin,
-  PipeTransform,
-  Type,
-} from '@nestjs/common';
+import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
 
 import { COMPARISON_OPERATOR, FilterOf } from '../third-party/nest-filters';
 import {
@@ -138,5 +133,5 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
     }
   }
 
-  return mixin(ToPrismaQueryPipe);
+  return ToPrismaQueryPipe;
 }
