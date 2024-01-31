@@ -1,16 +1,14 @@
-import { Type } from '@nestjs/common';
 import { GqlTypeReference } from '@nestjs/graphql';
 import { TypeOptions } from '@nestjs/graphql/dist/interfaces/type-options.interface';
 
-export type FieldType = Type | GqlTypeReference;
-export type FieldTypeFN = (() => FieldType) | (() => Array<FieldType>);
+export type FieldType = GqlTypeReference;
 
 type FieldMetadataOptions = TypeOptions & { description?: string };
 
 export class FieldMetadata {
   name: string;
   originalName: string;
-  type: FieldTypeFN;
+  type: () => FieldType;
   originalType?: GqlTypeReference;
   isPrimitiveType: boolean;
   options?: FieldMetadataOptions;
