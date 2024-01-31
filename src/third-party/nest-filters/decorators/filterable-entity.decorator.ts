@@ -29,7 +29,7 @@ export function FilterableEntity(name?: string) {
         new FieldMetadata({
           name: LOGICAL_OPERATORS._not,
           originalName: LOGICAL_OPERATORS._not,
-          type: () => notFilterInputType,
+          type: notFilterInputType,
           originalType: target,
           isPrimitiveType: false,
         }),
@@ -39,7 +39,7 @@ export function FilterableEntity(name?: string) {
           new FieldMetadata({
             name: LOGICAL_OPERATORS._and,
             originalName: LOGICAL_OPERATORS._and,
-            type: () => [inputType],
+            type: [inputType],
             originalType: target,
             isPrimitiveType: false,
           }),
@@ -49,7 +49,7 @@ export function FilterableEntity(name?: string) {
           new FieldMetadata({
             name: LOGICAL_OPERATORS._or,
             originalName: LOGICAL_OPERATORS._or,
-            type: () => [inputType],
+            type: [inputType],
             originalType: target,
             isPrimitiveType: false,
           }),

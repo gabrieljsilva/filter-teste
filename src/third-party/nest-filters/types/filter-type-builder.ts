@@ -16,16 +16,14 @@ export class FilterTypeBuilder {
   }
 
   static applyField(target: Type, field: FieldMetadata) {
-    const type = field.type();
-
-    const forwardedRef = type?.['forwardRef'] as Function;
+    const forwardedRef = field.type?.['forwardRef'] as Function;
 
     if (forwardedRef) {
       FilterTypeMetadataStorage.addLazyLoadDependency(target, field);
       return;
     }
 
-    Field(field.type, {
+    Field(() => field.type, {
       nullable: true,
       defaultValue: undefined,
     })(target.prototype, field.name);

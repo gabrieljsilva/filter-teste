@@ -62,7 +62,7 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
       new FieldMetadata({
         name: fieldOptions?.name ?? propertyKey,
         originalName: propertyKey,
-        type: fieldFilterType ? () => fieldFilterType : () => fieldType,
+        type: fieldFilterType ?? fieldType,
         originalType: fieldType,
         options: options,
         isPrimitiveType: primitiveTypes.has(fieldType),
