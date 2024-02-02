@@ -1,13 +1,15 @@
+import { Type } from '@nestjs/common';
 import {
   GqlTypeReference,
   ReturnTypeFunc,
   ReturnTypeFuncValue,
 } from '@nestjs/graphql';
+
 import { isFunction } from '@nestjs/common/utils/shared.utils';
 import { reflectTypeFromMetadata } from '@nestjs/graphql/dist/utils/reflection.utilts';
+import { LazyMetadataStorage } from '@nestjs/graphql/dist/schema-builder/storages/lazy-metadata.storage';
 
 import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
-import { primitiveTypes } from '../constants';
 import { FieldMetadata } from '../types/field-metadata';
 
 export type FieldOptions = {
@@ -34,39 +36,48 @@ export function FilterableField<T extends ReturnTypeFuncValue>(
   fieldOptions?: FieldOptionsExtractor<T>,
 ) {
   return (
-    target: NonNullable<unknown>,
+    prototype: NonNullable<unknown>,
     propertyKey?: string,
     descriptor?: TypedPropertyDescriptor<any>,
   ) => {
+    const target = prototype.constructor as Type;
+
     const [returnTypeFunc, fieldTypeOptions = {}] = isFunction(typeOrOptions)
       ? [typeOrOptions, fieldOptions]
       : [undefined, typeOrOptions as any];
 
-    const isResolverMethod = !!(descriptor && descriptor.value);
+    const filterInputType =
+      FilterTypeMetadataStorage.getOrCreateFilterType(target);
 
-    const { typeFn, options } = reflectTypeFromMetadata({
-      metadataKey: isResolverMethod ? 'design:returntype' : 'design:type',
-      prototype: target,
-      propertyKey: propertyKey,
-      explicitTypeFn: returnTypeFunc,
-      typeOptions: fieldTypeOptions,
-      ignoreOnUndefinedType: false,
-    });
+    const applyField = () => {
+      const isResolverMethod = !!(descriptor && descriptor.value);
 
-    const fieldType = typeFn();
-    const fieldFilterType =
-      FilterTypeMetadataStorage.getFilterTypeByTarget(fieldType);
+      const {
+        typeFn,
+        options: { isArray = false, nullable = false },
+      } = reflectTypeFromMetadata({
+        metadataKey: isResolverMethod ? 'design:returntype' : 'design:type',
+        prototype: prototype,
+        propertyKey: propertyKey,
+        explicitTypeFn: returnTypeFunc,
+        typeOptions: fieldTypeOptions,
+        ignoreOnUndefinedType: false,
+      });
 
-    FilterTypeMetadataStorage.addFieldMetadata(
-      target.constructor,
-      new FieldMetadata({
-        name: fieldOptions?.name ?? propertyKey,
+      const fieldMetadata = new FieldMetadata({
+        name: fieldOptions?.name || propertyKey,
+        type: typeFn(),
+        isArray: isArray,
+        nullable: nullable as boolean,
+        description: fieldOptions?.description,
         originalName: propertyKey,
-        type: fieldFilterType ? () => fieldFilterType : () => fieldType,
-        originalType: fieldType,
-        options: options,
-        isPrimitiveType: primitiveTypes.has(fieldType),
-      }),
-    );
+      });
+
+      fieldMetadata.addFieldMetadata(filterInputType);
+    };
+
+    LazyMetadataStorage.store(filterInputType, applyField, {
+      isField: true,
+    });
   };
 }

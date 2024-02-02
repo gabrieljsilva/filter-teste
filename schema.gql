@@ -51,9 +51,6 @@ input UserFilter {
   deletedAt: DateTimeFilter
   photos: PhotoFilter
   credentials: CredentialsFilter
-  _not: NotUserFilter
-  _and: [UserFilter!]
-  _or: [UserFilter!]
 }
 
 input IdFilter {
@@ -83,9 +80,6 @@ input PhotoFilter {
   categoryId: StringFilter
   userId: StringFilter
   category: CategoryFilter
-  _not: NotPhotoFilter
-  _and: [PhotoFilter!]
-  _or: [PhotoFilter!]
 }
 
 input CategoryFilter {
@@ -93,48 +87,11 @@ input CategoryFilter {
   name: StringFilter
   createdAt: DateTimeFilter
   deletedAt: DateTimeFilter
-  _not: NotCategoryFilter
-  _and: [CategoryFilter!]
-  _or: [CategoryFilter!]
-}
-
-input NotCategoryFilter {
-  id: IdFilter
-  name: StringFilter
-  createdAt: DateTimeFilter
-  deletedAt: DateTimeFilter
-}
-
-input NotPhotoFilter {
-  id: IdFilter
-  url: StringFilter
-  createdAt: DateTimeFilter
-  deletedAt: DateTimeFilter
-  categoryId: StringFilter
-  userId: StringFilter
-  category: CategoryFilter
 }
 
 input CredentialsFilter {
   email: StringFilter
-  _not: NotCredentialsFilter
-  _and: [CredentialsFilter!]
-  _or: [CredentialsFilter!]
   user: UserFilter
-}
-
-input NotCredentialsFilter {
-  email: StringFilter
-}
-
-input NotUserFilter {
-  id: IdFilter
-  name: StringFilter
-  birthDate: DateTimeFilter
-  createdAt: DateTimeFilter
-  deletedAt: DateTimeFilter
-  photos: PhotoFilter
-  credentials: CredentialsFilter
 }
 
 type Mutation {

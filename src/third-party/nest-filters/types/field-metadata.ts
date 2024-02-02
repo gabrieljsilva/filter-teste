@@ -1,34 +1,55 @@
-import { GqlTypeReference } from '@nestjs/graphql';
-import { TypeOptions } from '@nestjs/graphql/dist/interfaces/type-options.interface';
+import { GqlTypeReference, TypeMetadataStorage } from '@nestjs/graphql';
+import { Type } from '@nestjs/common';
 
-export type FieldType = GqlTypeReference;
+import { primitiveTypes } from '../constants';
+import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
 
-type FieldMetadataOptions = TypeOptions & { description?: string };
-
-export class FieldMetadata {
+interface IFieldMetadata {
   name: string;
+  type: GqlTypeReference;
+  description?: string;
   originalName: string;
-  type: () => FieldType;
-  originalType?: GqlTypeReference;
+  isArray: boolean;
+  nullable: boolean;
   isPrimitiveType: boolean;
-  options?: FieldMetadataOptions;
+}
 
-  constructor(metadata: Omit<FieldMetadata, 'getType' | 'isFieldLoaded'>) {
+export class FieldMetadata implements IFieldMetadata {
+  name: string;
+  type: GqlTypeReference;
+  description?: string;
+  originalName: string;
+  isArray: boolean;
+  nullable: boolean;
+  isPrimitiveType: boolean;
+
+  constructor(metadata: Omit<IFieldMetadata, 'isPrimitiveType'>) {
     this.name = metadata.name;
-    this.originalName = metadata.originalName;
     this.type = metadata.type;
-    this.originalType = metadata.originalType;
-    this.isPrimitiveType = metadata.isPrimitiveType;
-    this.options = metadata.options;
+    this.description = metadata.description;
+    this.originalName = metadata.originalName;
+    this.isArray = metadata.isArray;
+    this.nullable = metadata.nullable;
+    this.isPrimitiveType = primitiveTypes.has(metadata.type);
   }
 
-  getType() {
-    const forwardRef = this.type()?.['forwardRef'];
+  addFieldMetadata(target: Type) {
+    const filterType = FilterTypeMetadataStorage.typesToFilterMap.getValueByKey(
+      this.type,
+    );
 
-    if (forwardRef) {
-      return forwardRef();
-    }
+    FilterTypeMetadataStorage.fieldsByTarget.set(target.constructor, this);
 
-    return this.type();
+    TypeMetadataStorage.addClassFieldMetadata({
+      name: this.name,
+      schemaName: this.name,
+      options: {
+        isArray: false,
+        nullable: true,
+      },
+      target: target,
+      typeFn: () => filterType,
+      description: this.description,
+    });
   }
 }

@@ -1,5 +1,4 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { forwardRef } from '@nestjs/common';
 import Prisma from '@prisma/client';
 
 import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
@@ -23,6 +22,6 @@ export class Credentials implements Prisma.Credentials {
   @Field({ nullable: true })
   deletedAt: Date;
 
-  @FilterableField(() => forwardRef(() => User))
+  @FilterableField(() => User)
   user: User;
 }

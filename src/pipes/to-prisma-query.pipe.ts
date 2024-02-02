@@ -32,12 +32,13 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
     };
 
     async transform<T = unknown>(value: FilterOf<T>) {
-      if (!value) return {};
-
-      const fieldMetadata =
-        FilterTypeMetadataStorage.getIndexedFieldsByType(type);
-
-      return this.getWhereInputQuery(value, fieldMetadata);
+      return value;
+      // if (!value) return {};
+      //
+      // const fieldMetadata =
+      //   FilterTypeMetadataStorage.getIndexedFieldsByType(type);
+      //
+      // return this.getWhereInputQuery(value, fieldMetadata);
     }
 
     getWhereInputQuery(
@@ -45,40 +46,40 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
       metadata: Map<string, FieldMetadata>,
       query = {},
     ) {
-      Object.entries(filter).forEach(([property, fieldFilters]) => {
-        const propertyMetadata = metadata.get(property);
-
-        if (propertyMetadata.isPrimitiveType) {
-          this.getComparisonQuery(
-            fieldFilters as FilterOf<unknown>,
-            propertyMetadata,
-            query,
-          );
-          return;
-        }
-
-        const queryProperty =
-          clientToPrismaLogicalOperators[property] ?? property;
-
-        const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
-          propertyMetadata.originalType,
-        );
-
-        if (Array.isArray(fieldFilters)) {
-          query[queryProperty] = fieldFilters.map((item) =>
-            this.getWhereInputQuery(item, fieldMetadata, {}),
-          );
-          return;
-        }
-
-        query[queryProperty] = this.getWhereInputQuery(
-          fieldFilters as FilterOf<any>,
-          fieldMetadata,
-          {},
-        );
-      });
-
-      return query;
+      // Object.entries(filter).forEach(([property, fieldFilters]) => {
+      //   const propertyMetadata = metadata.get(property);
+      //
+      //   if (propertyMetadata.isPrimitiveType) {
+      //     this.getComparisonQuery(
+      //       fieldFilters as FilterOf<unknown>,
+      //       propertyMetadata,
+      //       query,
+      //     );
+      //     return;
+      //   }
+      //
+      //   const queryProperty =
+      //     clientToPrismaLogicalOperators[property] ?? property;
+      //
+      //   const fieldMetadata = FilterTypeMetadataStorage.getIndexedFieldsByType(
+      //     propertyMetadata.originalType,
+      //   );
+      //
+      //   if (Array.isArray(fieldFilters)) {
+      //     query[queryProperty] = fieldFilters.map((item) =>
+      //       this.getWhereInputQuery(item, fieldMetadata, {}),
+      //     );
+      //     return;
+      //   }
+      //
+      //   query[queryProperty] = this.getWhereInputQuery(
+      //     fieldFilters as FilterOf<any>,
+      //     fieldMetadata,
+      //     {},
+      //   );
+      // });
+      //
+      // return query;
     }
 
     getComparisonQuery(
@@ -86,17 +87,17 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
       metadata: FieldMetadata,
       query = {},
     ) {
-      const isFieldNullable = !!metadata.options.nullable;
-
-      Object.entries(filters).forEach(([operation, value]) => {
-        if (!isFieldNullable && value === null) {
-          throw new BadRequestException(
-            `field ${metadata.name} cannot be null`,
-          );
-        }
-        const queryFN = this.getQueryFN(operation as COMPARISON_OPERATOR);
-        Object.assign(query, queryFN(metadata, value as FilterOf<unknown>));
-      });
+      // const isFieldNullable = !!metadata.options.nullable;
+      //
+      // Object.entries(filters).forEach(([operation, value]) => {
+      //   if (!isFieldNullable && value === null) {
+      //     throw new BadRequestException(
+      //       `field ${metadata.name} cannot be null`,
+      //     );
+      //   }
+      //   const queryFN = this.getQueryFN(operation as COMPARISON_OPERATOR);
+      //   Object.assign(query, queryFN(metadata, value as FilterOf<unknown>));
+      // });
     }
 
     getQueryFN(operation: COMPARISON_OPERATOR) {
