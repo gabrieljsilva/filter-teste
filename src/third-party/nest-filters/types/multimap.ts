@@ -7,7 +7,7 @@ export class MultiMap<Key, Value> {
     this.to = new Map();
   }
 
-  set(key: Key, value: Value) {
+  add(key: Key, value: Value) {
     this.deleteByValue(value);
     const set = this.from.get(key) || new Set<Value>();
     if (set.size === 0) {

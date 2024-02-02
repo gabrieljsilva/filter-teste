@@ -4,8 +4,8 @@ import {
   GraphQLISODateTime,
   ID,
   Int,
+  GraphQLTimestamp,
 } from '@nestjs/graphql';
-import { TimestampFilter } from '../filters';
 
 export const primitiveTypes = new Set<GqlTypeReference>([
   Boolean,
@@ -16,5 +16,5 @@ export const primitiveTypes = new Set<GqlTypeReference>([
   Int,
   Float,
   GraphQLISODateTime,
-  TimestampFilter,
+  GraphQLTimestamp,
 ]);

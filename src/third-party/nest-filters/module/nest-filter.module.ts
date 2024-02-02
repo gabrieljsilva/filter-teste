@@ -3,7 +3,7 @@ import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-stora
 
 export class NestFilterModule implements OnModuleInit {
   onModuleInit() {
-    // FilterTypeMetadataStorage.mapTypeFieldsByName();
+    FilterTypeMetadataStorage.indexFieldsByName();
   }
 
   static register(): DynamicModule {

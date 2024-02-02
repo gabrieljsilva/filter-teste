@@ -1,9 +1,7 @@
-import {
-  BooleanFilter,
-  DateTimeFilter,
-  FloatFilter,
-  StringFilter,
-} from '../filters';
+import { BooleanFilter } from '../filters/boolean-filter.filter';
+import { FloatFilter } from '../filters/float-filter.filter';
+import { StringFilter } from '../filters/string.filter';
+import { DateTimeFilter } from '../filters/date-time.filter';
 
 type ArrayFilter<T> = T extends Array<infer U> ? FilterOf<U> : never;
 
@@ -22,9 +20,9 @@ type BaseFilter<T> = {
 };
 
 export type LogicalOperationsFilter<T> = {
-  _and: Array<FilterOf<T>>;
-  _or: Array<FilterOf<T>>;
-  _not: Omit<FilterOf<T>, '_not' | '_or' | '_and'>;
+  _AND: Array<FilterOf<T>>;
+  _OR: Array<FilterOf<T>>;
+  _NOT: FilterOf<T>;
 };
 
 export type FilterOf<T> = BaseFilter<T> & LogicalOperationsFilter<T>;

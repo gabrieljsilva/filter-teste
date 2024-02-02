@@ -44,6 +44,9 @@ type Query {
 }
 
 input UserFilter {
+  _AND: [UserFilter!]
+  _OR: [UserFilter!]
+  _NOT: UserFilter
   id: IdFilter
   name: StringFilter
   birthDate: DateTimeFilter
@@ -73,6 +76,9 @@ input DateTimeFilter {
 }
 
 input PhotoFilter {
+  _AND: [PhotoFilter!]
+  _OR: [PhotoFilter!]
+  _NOT: PhotoFilter
   id: IdFilter
   url: StringFilter
   createdAt: DateTimeFilter
@@ -83,6 +89,9 @@ input PhotoFilter {
 }
 
 input CategoryFilter {
+  _AND: [CategoryFilter!]
+  _OR: [CategoryFilter!]
+  _NOT: CategoryFilter
   id: IdFilter
   name: StringFilter
   createdAt: DateTimeFilter
@@ -90,6 +99,9 @@ input CategoryFilter {
 }
 
 input CredentialsFilter {
+  _AND: [CredentialsFilter!]
+  _OR: [CredentialsFilter!]
+  _NOT: CredentialsFilter
   email: StringFilter
   user: UserFilter
 }

@@ -13,12 +13,12 @@ import { formatError } from './utils';
 @Module({
   imports: [
     PrismaModule,
-    NestFilterModule.register(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'schema.gql'),
       formatError,
     }),
+    NestFilterModule.register(),
     AuthModule,
     UserModule,
   ],
