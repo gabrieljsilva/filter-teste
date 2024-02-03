@@ -3,7 +3,7 @@ import { Args } from '@nestjs/graphql';
 
 import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
 import { FilterArgsOptions } from '../types/filter-args-options';
-import { getOptionsOrPipes } from '../utils/get-options-and-pipes';
+import { getOptionsOrPipes } from './get-options-and-pipes';
 
 export const createFilterArgsDecorator = (
   storage: FilterTypeMetadataStorage,

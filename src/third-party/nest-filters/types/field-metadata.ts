@@ -1,8 +1,6 @@
-import { GqlTypeReference, TypeMetadataStorage } from '@nestjs/graphql';
-import { Type } from '@nestjs/common';
+import { GqlTypeReference } from '@nestjs/graphql';
 
 import { primitiveTypes } from '../constants/primitive-types';
-import { filterTypeMetadataStorage } from '../index';
 
 interface IFieldMetadata {
   name: string;
