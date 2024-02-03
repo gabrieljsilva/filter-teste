@@ -49,4 +49,22 @@ describe('Multimap tests', () => {
     expect(values.has(Value3)).toBeTruthy();
     expect(values.has(Value4)).toBeTruthy();
   });
+
+  it('Should get all entries', () => {
+    const entries = multimap.entries();
+    for (const [key, values] of entries) {
+      for (const value of values) {
+        const valueByKey = multimap.getValuesByKey(key);
+        expect(valueByKey.has(value)).toBe(true);
+      }
+    }
+  });
+
+  it('Should delete key when delete last value', () => {
+    const multimap = new MultiMap();
+    multimap.add('key', 'value');
+    multimap.deleteByValue('value');
+    const keys = Array.from(multimap.keys());
+    expect(keys.length).toBe(0);
+  });
 });
