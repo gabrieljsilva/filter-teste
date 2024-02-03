@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
-import { NestFilterModule } from './third-party/nest-filters/module';
+import { NestFilterModule } from './third-party/nest-filters';
 import { PrismaModule } from './infra';
 import { UserModule } from './modules';
 import { AuthModule } from './modules/auth/auth.module';

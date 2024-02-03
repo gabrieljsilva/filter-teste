@@ -1,8 +1,8 @@
 import { GqlTypeReference, TypeMetadataStorage } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
 
-import { FilterTypeMetadataStorage } from '../storage/filter-type-metadata-storage';
 import { primitiveTypes } from '../constants/primitive-types';
+import { filterTypeMetadataStorage } from '../index';
 
 interface IFieldMetadata {
   name: string;
@@ -31,31 +31,5 @@ export class FieldMetadata implements IFieldMetadata {
     this.isArray = metadata.isArray;
     this.nullable = metadata.nullable;
     this.isPrimitiveType = primitiveTypes.has(metadata.type);
-  }
-
-  private addToStorage(target: Type) {
-    const originalType =
-      FilterTypeMetadataStorage.typesToFilterMap.getKeyByValue(target);
-
-    FilterTypeMetadataStorage.fieldsByTarget.add(originalType, this);
-  }
-
-  addFieldMetadata(target: Type) {
-    const fieldFilterType =
-      FilterTypeMetadataStorage.typesToFilterMap.getValueByKey(this.type);
-
-    this.addToStorage(target);
-
-    TypeMetadataStorage.addClassFieldMetadata({
-      name: this.name,
-      schemaName: this.name,
-      options: {
-        isArray: false,
-        nullable: true,
-      },
-      target: target,
-      typeFn: () => fieldFilterType,
-      description: this.description,
-    });
   }
 }

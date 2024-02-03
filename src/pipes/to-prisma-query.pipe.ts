@@ -1,10 +1,13 @@
 import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
 
-import { COMPARISON_OPERATOR, FilterOf } from '../third-party/nest-filters';
+import {
+  COMPARISON_OPERATOR,
+  FilterOf,
+  getIndexedFields,
+} from '../third-party/nest-filters';
 import { memoize } from '../utils';
-import { LOGICAL_OPERATORS } from '../third-party/nest-filters/types/logical-operations';
+import { LOGICAL_OPERATORS } from '../third-party/nest-filters/enums/logical-operations';
 import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
-import { getIndexedFieldsByType } from '../third-party/nest-filters/utils/get-indexed-fields-by-target';
 
 const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
   [LOGICAL_OPERATORS._AND]: 'AND',
@@ -33,7 +36,7 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
     async transform<T = unknown>(value: FilterOf<T>) {
       if (!value) return {};
 
-      const fieldMetadata = getIndexedFieldsByType(type);
+      const fieldMetadata = getIndexedFields(type);
 
       return this.getWhereInputQuery(value, fieldMetadata);
     }
@@ -58,7 +61,7 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
         const queryProperty =
           clientToPrismaLogicalOperators[property] || property;
 
-        const fieldMetadata = getIndexedFieldsByType(propertyMetadata.type);
+        const fieldMetadata = getIndexedFields(propertyMetadata.type);
 
         if (Array.isArray(fieldFilters)) {
           query[queryProperty] = fieldFilters.map((item) =>

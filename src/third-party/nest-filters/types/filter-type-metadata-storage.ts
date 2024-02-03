@@ -1,27 +1,30 @@
-import { Field, GqlTypeReference } from '@nestjs/graphql';
+import { Field, GqlTypeReference, TypeMetadataStorage } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
 
-import { BidirectionalMap } from '../types/bidirectional-map';
-import { MultiMap } from '../types/multimap';
-import { FieldMetadata } from '../types/field-metadata';
-import { LOGICAL_OPERATORS } from '../types/logical-operations';
-import { filterTypeMap } from '../constants/filter-type-map';
+import { BidirectionalMap } from './bidirectional-map';
+import { MultiMap } from './multimap';
+import { FieldMetadata } from './field-metadata';
+import { LOGICAL_OPERATORS } from '../enums/logical-operations';
 import { mapBy } from '../utils/map-by';
 
-export class FilterTypeMetadataStorage {
-  public static typesToFilterMap = new BidirectionalMap(filterTypeMap);
+interface IFilterTypeMetadataStorage {
+  typesToFilterMap: BidirectionalMap<GqlTypeReference, Type<unknown>>;
+  fieldsByTarget: MultiMap<GqlTypeReference, FieldMetadata>;
+  typeFieldsMapIndexedByName: Map<GqlTypeReference, Map<string, FieldMetadata>>;
+}
 
-  public static fieldsByTarget = new MultiMap<
-    GqlTypeReference,
-    FieldMetadata
-  >();
+export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
+  typesToFilterMap: BidirectionalMap<GqlTypeReference, Type<unknown>>;
+  fieldsByTarget: MultiMap<GqlTypeReference, FieldMetadata>;
+  typeFieldsMapIndexedByName: Map<GqlTypeReference, Map<string, FieldMetadata>>;
 
-  public static typeFieldsMapIndexedByName = new Map<
-    GqlTypeReference,
-    Map<string, FieldMetadata>
-  >();
+  constructor(params: IFilterTypeMetadataStorage) {
+    this.typesToFilterMap = params.typesToFilterMap;
+    this.fieldsByTarget = params.fieldsByTarget;
+    this.typeFieldsMapIndexedByName = params.typeFieldsMapIndexedByName;
+  }
 
-  public static indexFieldsByName() {
+  public indexFieldsByName() {
     const typeFieldsMap = this.fieldsByTarget.entries();
     for (const [type, fields] of typeFieldsMap) {
       const mappedFields = mapBy(fields, 'name');
@@ -29,7 +32,24 @@ export class FilterTypeMetadataStorage {
     }
   }
 
-  public static getOrCreateFilterType(target: Type<unknown>) {
+  public addFieldMetadata(target: Type<unknown>, field: FieldMetadata) {
+    const fieldFilterType = this.typesToFilterMap.getValueByKey(field.type);
+    const originalType = this.typesToFilterMap.getKeyByValue(target);
+    this.fieldsByTarget.add(originalType, field);
+    TypeMetadataStorage.addClassFieldMetadata({
+      name: field.originalName,
+      schemaName: field.name,
+      options: {
+        isArray: false,
+        nullable: true,
+      },
+      target: target,
+      typeFn: () => fieldFilterType,
+      description: field.description,
+    });
+  }
+
+  public getOrCreateFilterType(target: Type<unknown>) {
     const filterType = this.typesToFilterMap.getValueByKey(target);
 
     if (filterType) {

@@ -1,4 +1,4 @@
-export interface FilterArgsOptions {
+export class FilterArgsOptions {
   name?: string;
   description?: string;
 }

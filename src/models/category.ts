@@ -6,7 +6,7 @@ import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
 @FilterableEntity()
 @ObjectType()
 export class Category implements Prisma.Category {
-  @Field(() => ID)
+  @Field()
   @FilterableField(() => ID)
   id: string;
 
