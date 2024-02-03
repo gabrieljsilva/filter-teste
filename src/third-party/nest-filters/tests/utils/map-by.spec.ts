@@ -1,7 +1,7 @@
 import { mapBy } from '../../utils/map-by';
 
 describe('mapBy function tests', () => {
-  it('should map a iterable by property', () => {
+  it('should map a iterable by property correctly', () => {
     const animals = [
       { name: 'Cat', createdAt: new Date() },
       { name: 'Dog', createdAt: new Date() },
@@ -17,7 +17,7 @@ describe('mapBy function tests', () => {
     expect(animalsMappedByName.get('Macaw')).toBe(animals[2]);
   });
 
-  it('should replace value if key is repeated', () => {
+  it('should replace value if key is repeated and keep size', () => {
     const animals = [
       { name: 'Cat', createdAt: new Date() },
       { name: 'Dog', createdAt: new Date() },

@@ -1,14 +1,16 @@
-import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
+import { Type } from '@nestjs/common';
 import {
   GqlTypeReference,
   ReturnTypeFunc,
   ReturnTypeFuncValue,
 } from '@nestjs/graphql';
-import { Type } from '@nestjs/common';
+
+import { LazyMetadataStorage } from '@nestjs/graphql/dist/schema-builder/storages/lazy-metadata.storage';
 import { isFunction } from '@nestjs/common/utils/shared.utils';
 import { reflectTypeFromMetadata } from '@nestjs/graphql/dist/utils/reflection.utilts';
+
 import { FieldMetadata } from '../types/field-metadata';
-import { LazyMetadataStorage } from '@nestjs/graphql/dist/schema-builder/storages/lazy-metadata.storage';
+import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage';
 
 type FieldOptions = {
   name?: string;

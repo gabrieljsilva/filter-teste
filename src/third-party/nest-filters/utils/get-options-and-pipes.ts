@@ -8,28 +8,22 @@ export function getOptionsOrPipes(
     | (Type<PipeTransform> | PipeTransform)[]
     | Type<PipeTransform>
     | PipeTransform,
-  pipes?: (Type<PipeTransform> | PipeTransform)[],
+  ...pipes: (Type<PipeTransform> | PipeTransform)[]
 ) {
-  const extractedPipes: (Type<PipeTransform> | PipeTransform)[] = [];
   const extractedOptions: FilterArgsOptions = {
     name: 'filters',
   };
 
   if (isPipe(optionsOrPipes)) {
-    extractedPipes.push(optionsOrPipes);
+    pipes.push(optionsOrPipes);
   } else {
     const options = optionsOrPipes as FilterArgsOptions;
-    extractedOptions.name = options?.name || 'filters';
-    if (options?.name) {
-      extractedOptions.name = options.name;
-    }
+    extractedOptions.name = options?.name || extractedOptions.name;
     extractedOptions.description = options?.description;
   }
 
-  extractedPipes.push(...pipes);
-
   return {
-    pipes: extractedPipes,
-    options: extractedOptions as FilterArgsOptions,
+    pipes: pipes,
+    options: extractedOptions,
   };
 }

@@ -15,7 +15,7 @@ export const createFilterArgsDecorator = (
   ) {
     const { options, pipes: extractedPipes } = getOptionsOrPipes(
       optionsOrPipe,
-      pipes,
+      ...pipes,
     );
 
     return (target: NonNullable<any>, key: string, index: number) => {
