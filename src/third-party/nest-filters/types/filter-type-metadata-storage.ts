@@ -10,25 +10,25 @@ import { mapBy } from '../utils/map-by';
 interface IFilterTypeMetadataStorage {
   typesToFilterMap: BidirectionalMap<GqlTypeReference, Type<unknown>>;
   fieldsByTarget: MultiMap<GqlTypeReference, FieldMetadata>;
-  typeFieldsMapIndexedByName: Map<GqlTypeReference, Map<string, FieldMetadata>>;
+  fieldsToTypeIndexedByName: Map<GqlTypeReference, Map<string, FieldMetadata>>;
 }
 
 export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
   typesToFilterMap: BidirectionalMap<GqlTypeReference, Type<unknown>>;
   fieldsByTarget: MultiMap<GqlTypeReference, FieldMetadata>;
-  typeFieldsMapIndexedByName: Map<GqlTypeReference, Map<string, FieldMetadata>>;
+  fieldsToTypeIndexedByName: Map<GqlTypeReference, Map<string, FieldMetadata>>;
 
   constructor(params: IFilterTypeMetadataStorage) {
     this.typesToFilterMap = params.typesToFilterMap;
     this.fieldsByTarget = params.fieldsByTarget;
-    this.typeFieldsMapIndexedByName = params.typeFieldsMapIndexedByName;
+    this.fieldsToTypeIndexedByName = params.fieldsToTypeIndexedByName;
   }
 
   public indexFieldsByName() {
     const typeFieldsMap = this.fieldsByTarget.entries();
     for (const [type, fields] of typeFieldsMap) {
       const mappedFields = mapBy(fields, 'name');
-      this.typeFieldsMapIndexedByName.set(type, mappedFields);
+      this.fieldsToTypeIndexedByName.set(type, mappedFields);
     }
   }
 
@@ -36,6 +36,7 @@ export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
     const fieldFilterType = this.typesToFilterMap.getValueByKey(field.type);
     const originalType = this.typesToFilterMap.getKeyByValue(target);
     this.fieldsByTarget.add(originalType, field);
+
     TypeMetadataStorage.addClassFieldMetadata({
       name: field.originalName,
       schemaName: field.name,
@@ -103,7 +104,7 @@ export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
         name: LOGICAL_OPERATORS._NOT,
         originalName: LOGICAL_OPERATORS._NOT,
         type: target,
-        isArray: false,
+        isArray: true,
         nullable: true,
         description: `not operator for ${target.name} filter`,
       }),

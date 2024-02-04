@@ -3,5 +3,5 @@ import { FilterTypeMetadataStorage } from '../types/filter-type-metadata-storage
 
 export function createGetIndexedFields(storage: FilterTypeMetadataStorage) {
   return (type: GqlTypeReference) =>
-    storage.typeFieldsMapIndexedByName.get(type);
+    storage.fieldsToTypeIndexedByName.get(type);
 }

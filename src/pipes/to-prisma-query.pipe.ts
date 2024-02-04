@@ -3,6 +3,7 @@ import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
 import {
   COMPARISON_OPERATOR,
   FilterOf,
+  getFieldMetadata,
   getIndexedFields,
 } from '../third-party/nest-filters';
 import { memoize } from '../utils';

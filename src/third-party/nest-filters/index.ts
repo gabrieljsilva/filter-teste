@@ -20,11 +20,11 @@ import { filterTypeMap } from './constants/filter-type-map';
 
 const typesToFilterMap = new BidirectionalMap(filterTypeMap);
 const fieldsByTarget = new MultiMap<GqlTypeReference, FieldMetadata>();
-const typeFieldsMapIndexedByName = new Map();
+const fieldsToTypeIndexedByName = new Map();
 const filterTypeMetadataStorage = new FilterTypeMetadataStorage({
   typesToFilterMap: typesToFilterMap,
   fieldsByTarget: fieldsByTarget,
-  typeFieldsMapIndexedByName: typeFieldsMapIndexedByName,
+  fieldsToTypeIndexedByName: fieldsToTypeIndexedByName,
 });
 
 export const FilterableField = createFilterableFieldDecorator(
