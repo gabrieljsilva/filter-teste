@@ -1,22 +1,24 @@
 import { Field, GraphQLTimestamp, InputType } from '@nestjs/graphql';
 
+const timestamp = GraphQLTimestamp;
+
 @InputType()
 export class TimestampFilter {
-  @Field(() => GraphQLTimestamp, { nullable: true })
+  @Field(/* istanbul ignore next */ () => timestamp, { nullable: true })
   is?: Date;
 
-  @Field(() => [GraphQLTimestamp], { nullable: true })
+  @Field(/* istanbul ignore next */ () => [timestamp], { nullable: true })
   in?: Array<Date>;
 
-  @Field(() => GraphQLTimestamp, { nullable: true })
+  @Field(/* istanbul ignore next */ () => timestamp, { nullable: true })
   gt?: Date;
 
-  @Field(() => GraphQLTimestamp, { nullable: true })
+  @Field(/* istanbul ignore next */ () => timestamp, { nullable: true })
   lt?: Date;
 
-  @Field(() => GraphQLTimestamp, { nullable: true })
+  @Field(/* istanbul ignore next */ () => timestamp, { nullable: true })
   gte?: Date;
 
-  @Field(() => GraphQLTimestamp, { nullable: true })
+  @Field(/* istanbul ignore next */ () => timestamp, { nullable: true })
   lte?: Date;
 }

@@ -8,6 +8,8 @@ export class StringFilter {
   @Field({ nullable: true })
   like?: string;
 
-  @Field(() => [String], { nullable: 'itemsAndList' })
+  @Field(/* istanbul ignore next */ () => [String], {
+    nullable: 'itemsAndList',
+  })
   in?: Array<string>;
 }

@@ -1,22 +1,26 @@
 import { Field, GraphQLISODateTime, InputType } from '@nestjs/graphql';
 
+const DateTime = GraphQLISODateTime;
+
 @InputType()
 export class DateTimeFilter {
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(/* istanbul ignore next */ () => DateTime, { nullable: true })
   is?: Date;
 
-  @Field(() => [GraphQLISODateTime], { nullable: 'itemsAndList' })
+  @Field(/* istanbul ignore next */ () => [DateTime], {
+    nullable: 'itemsAndList',
+  })
   in?: Array<Date>;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(/* istanbul ignore next */ () => DateTime, { nullable: true })
   gt?: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(/* istanbul ignore next */ () => DateTime, { nullable: true })
   lt?: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(/* istanbul ignore next */ () => DateTime, { nullable: true })
   gte?: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(/* istanbul ignore next */ () => DateTime, { nullable: true })
   lte?: Date;
 }

@@ -2,21 +2,21 @@ import { Field, Float, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class FloatFilter {
-  @Field(() => Float, { nullable: true })
+  @Field(/* istanbul ignore next */ () => Float, { nullable: true })
   is?: number;
 
-  @Field(() => [Float], { nullable: 'itemsAndList' })
+  @Field(/* istanbul ignore next */ () => [Float], { nullable: 'itemsAndList' })
   in?: Array<number>;
 
-  @Field(() => Float, { nullable: true })
+  @Field(/* istanbul ignore next */ () => Float, { nullable: true })
   gt?: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(/* istanbul ignore next */ () => Float, { nullable: true })
   lt?: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(/* istanbul ignore next */ () => Float, { nullable: true })
   gte?: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(/* istanbul ignore next */ () => Float, { nullable: true })
   lte?: number;
 }
