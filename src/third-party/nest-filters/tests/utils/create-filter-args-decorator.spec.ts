@@ -4,7 +4,6 @@ import { PipeTransform } from '@nestjs/common';
 import { FilterTypeMetadataStorage } from '../../types/filter-type-metadata-storage';
 import { createGetFilterOf } from '../../utils/create-get-filter-of';
 import { BidirectionalMap } from '../../types/bidirectional-map';
-import { StringFilter } from '../../filters/string.filter';
 import { MultiMap } from '../../types/multimap';
 import { createFilterArgsDecorator } from '../../utils/create-filter-args-decorator';
 import { createFilterableFieldDecorator } from '../../utils/create-filterable-field-decorator';

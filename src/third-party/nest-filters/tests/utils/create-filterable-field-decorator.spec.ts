@@ -101,7 +101,7 @@ describe('filterable field decorator tests', () => {
     expect(_NOT).toHaveProperty('originalName', '_NOT');
     expect(_NOT).toHaveProperty('isPrimitiveType', false);
     expect(_NOT).toHaveProperty('nullable', true);
-    expect(_NOT).toHaveProperty('isArray', true);
+    expect(_NOT).toHaveProperty('isArray', false);
     expect(_NOT).toHaveProperty('type', Cat);
 
     // name properties

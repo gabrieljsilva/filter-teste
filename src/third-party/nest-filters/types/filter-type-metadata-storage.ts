@@ -24,14 +24,6 @@ export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
     this.fieldsToTypeIndexedByName = params.fieldsToTypeIndexedByName;
   }
 
-  public indexFieldsByName() {
-    const typeFieldsMap = this.fieldsByTarget.entries();
-    for (const [type, fields] of typeFieldsMap) {
-      const mappedFields = mapBy(fields, 'name');
-      this.fieldsToTypeIndexedByName.set(type, mappedFields);
-    }
-  }
-
   public addFieldMetadata(target: Type<unknown>, field: FieldMetadata) {
     const fieldFilterType = this.typesToFilterMap.getValueByKey(field.type);
     const originalType = this.typesToFilterMap.getKeyByValue(target);
@@ -48,6 +40,14 @@ export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
       typeFn: () => fieldFilterType,
       description: field.description,
     });
+  }
+
+  public indexFieldsByName() {
+    const typeFieldsMap = this.fieldsByTarget.entries();
+    for (const [type, fields] of typeFieldsMap) {
+      const mappedFields = mapBy(fields, 'name');
+      this.fieldsToTypeIndexedByName.set(type, mappedFields);
+    }
   }
 
   public getOrCreateFilterType(target: Type<unknown>) {
@@ -104,7 +104,7 @@ export class FilterTypeMetadataStorage implements IFilterTypeMetadataStorage {
         name: LOGICAL_OPERATORS._NOT,
         originalName: LOGICAL_OPERATORS._NOT,
         type: target,
-        isArray: true,
+        isArray: false,
         nullable: true,
         description: `not operator for ${target.name} filter`,
       }),

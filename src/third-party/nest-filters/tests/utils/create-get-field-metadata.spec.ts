@@ -9,7 +9,7 @@ import { MultiMap } from '../../types/multimap';
 import { createGetFieldMetadata } from '../../utils/create-get-field-metadata';
 import { FieldMetadata } from '../../types/field-metadata';
 
-describe('create get field metadata decorator tests', () => {
+describe('create get field metadata tests', () => {
   let storage: FilterTypeMetadataStorage;
   let FilterableField: ReturnType<typeof createFilterableFieldDecorator>;
   let getFieldMetadata: ReturnType<typeof createGetFieldMetadata>;
