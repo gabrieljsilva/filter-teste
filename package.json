@@ -21,8 +21,6 @@
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
-    "@gabrieljsilva/nestjs-graphql-filter": "^1.0.0",
-    "@gabrieljsilva/nestjs-graphql-filter-adapter-prisma": "^1.0.0",
     "@nestjs/apollo": "^12.0.10",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
