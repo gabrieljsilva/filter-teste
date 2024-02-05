@@ -1,12 +1,14 @@
 import { GqlTypeReference } from '@nestjs/graphql';
 
 export type { FilterOf } from './types/filter-of.type';
-export type { COMPARISON_OPERATOR } from './enums/comparison-operators';
+export { COMPARISON_OPERATOR } from './enums/comparison-operators';
+export { LOGICAL_OPERATORS } from './enums/logical-operations';
 
 import { FilterTypeMetadataStorage } from './types/filter-type-metadata-storage';
 import { BidirectionalMap } from './types/bidirectional-map';
 import { MultiMap } from './types/multimap';
 import { FieldMetadata } from './types/field-metadata';
+export { FieldMetadata } from './types/field-metadata';
 
 import { createGetFieldMetadata } from './utils/create-get-field-metadata';
 import { createGetFilterOf } from './utils/create-get-filter-of';

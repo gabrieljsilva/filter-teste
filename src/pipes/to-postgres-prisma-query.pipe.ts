@@ -1,13 +1,19 @@
-import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  PipeTransform,
+  Type,
+} from '@nestjs/common';
 
 import {
   COMPARISON_OPERATOR,
+  LOGICAL_OPERATORS,
   FilterOf,
+  FieldMetadata,
   getIndexedFields,
 } from '../third-party/nest-filters';
 import { memoize } from '../utils';
-import { LOGICAL_OPERATORS } from '../third-party/nest-filters/enums/logical-operations';
-import { FieldMetadata } from '../third-party/nest-filters/types/field-metadata';
+import { PrismaService } from '../infra';
 
 const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
   [LOGICAL_OPERATORS._AND]: 'AND',
@@ -17,12 +23,16 @@ const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
 
 type QueryBuilderByOperationsMap = Record<COMPARISON_OPERATOR, Function>;
 
-export const ToPrismaQueryPipe = memoize<(type: Type) => PipeTransform>(
-  createToPrismaQueryPipe,
+export const ToPostgresPrismaQueryPipe = memoize<(type: Type) => PipeTransform>(
+  createToPostgresPrismaQueryPipe,
 );
 
-function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
-  class ToPrismaQueryPipe implements PipeTransform {
+function createToPostgresPrismaQueryPipe(type: Type): Type<PipeTransform> {
+  class ToPostgresPrismaQueryPipe implements PipeTransform {
+    constructor(
+      @Inject(PrismaService) private readonly PrismaService: PrismaService,
+    ) {}
+
     queryBuilderByOperationMap: QueryBuilderByOperationsMap = {
       is: this.getIsOperator,
       like: this.getLikeOperator,
@@ -131,5 +141,5 @@ function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
     }
   }
 
-  return ToPrismaQueryPipe;
+  return ToPostgresPrismaQueryPipe;
 }

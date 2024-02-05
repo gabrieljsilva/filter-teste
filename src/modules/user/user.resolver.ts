@@ -13,7 +13,7 @@ import { PrismaService } from '../../infra';
 import { UserService } from './user.service';
 import { User, Photo, Credentials } from '../../models';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { ToPrismaQueryPipe } from '../../pipes';
+import { ToPostgresPrismaQueryPipe } from '../../pipes';
 
 @Resolver(User)
 export class UserResolver {
@@ -39,7 +39,7 @@ export class UserResolver {
 
   @Query(() => [User])
   async findUsers(
-    @FilterArgs(User, ToPrismaQueryPipe(User))
+    @FilterArgs(User, ToPostgresPrismaQueryPipe(User))
     userFilter: Prisma.UserWhereInput,
   ) {
     return this.userService.findUsers(userFilter);
