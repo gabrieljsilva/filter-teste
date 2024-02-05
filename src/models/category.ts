@@ -1,7 +1,9 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import Prisma from '@prisma/client';
-
-import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
+import {
+  FilterableEntity,
+  FilterableField,
+} from '@gabrieljsilva/nest-graphql-filters';
 
 @FilterableEntity()
 @ObjectType()

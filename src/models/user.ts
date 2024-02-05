@@ -1,5 +1,9 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
+
+import {
+  FilterableEntity,
+  FilterableField,
+} from '@gabrieljsilva/nest-graphql-filters';
 
 import { Photo } from './photo';
 import { Credentials } from './credentials';

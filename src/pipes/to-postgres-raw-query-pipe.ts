@@ -3,7 +3,7 @@ import {
   FieldMetadata,
   FilterOf,
   getIndexedFields,
-} from '../third-party/nest-filters';
+} from '@gabrieljsilva/nest-graphql-filters';
 import { memoize } from '../utils';
 
 export const ToPostgresRawQueryPipe = memoize<(type: Type) => PipeTransform>(

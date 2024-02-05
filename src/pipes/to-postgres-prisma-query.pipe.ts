@@ -11,7 +11,7 @@ import {
   FilterOf,
   FieldMetadata,
   getIndexedFields,
-} from '../third-party/nest-filters';
+} from '@gabrieljsilva/nest-graphql-filters';
 import { memoize } from '../utils';
 import { PrismaService } from '../infra';
 

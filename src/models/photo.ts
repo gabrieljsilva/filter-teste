@@ -3,7 +3,10 @@ import Prisma from '@prisma/client';
 
 import { Category } from './category';
 
-import { FilterableEntity, FilterableField } from '../third-party/nest-filters';
+import {
+  FilterableEntity,
+  FilterableField,
+} from '@gabrieljsilva/nest-graphql-filters';
 
 @FilterableEntity()
 @ObjectType()

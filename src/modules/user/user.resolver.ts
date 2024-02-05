@@ -8,7 +8,8 @@ import {
 } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
-import { FilterArgs } from '../../third-party/nest-filters';
+import { FilterArgs } from '@gabrieljsilva/nest-graphql-filters';
+
 import { PrismaService } from '../../infra';
 import { UserService } from './user.service';
 import { User, Photo, Credentials } from '../../models';
