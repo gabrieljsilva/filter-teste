@@ -6,7 +6,6 @@ import { MultiMap } from './multimap';
 import { FieldMetadata } from './field-metadata';
 import { LOGICAL_OPERATORS } from '../enums/logical-operations';
 import { mapBy } from '../utils/map-by';
-import { LazyMetadataStorage } from '@nestjs/graphql/dist/schema-builder/storages/lazy-metadata.storage';
 
 interface IFilterTypeMetadataStorage {
   typesToFilterMap: BidirectionalMap<GqlTypeReference, Type<unknown>>;
