@@ -4,7 +4,7 @@ import {
   FilterOf,
   getIndexedFields,
 } from '@gabrieljsilva/nest-graphql-filters';
-import { memoize } from '../utils';
+import { memoize } from '../../utils';
 
 export const ToPostgresRawQueryPipe = memoize<(type: Type) => PipeTransform>(
   createToPostgresRawQueryPipe,
@@ -25,7 +25,7 @@ export function createToPostgresRawQueryPipe(type: Type<unknown>) {
       metadata: Map<string, FieldMetadata>,
       query = {},
     ) {
-      return 'SQL PURO AKSJKASJKAS';
+      return 'SQL PURO';
     }
   }
 

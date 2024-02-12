@@ -576,10 +576,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.56.0.tgz#ef20350fec605a7f7035a01764731b2de0f3782b"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@gabrieljsilva/nest-graphql-filters@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@gabrieljsilva/nest-graphql-filters/-/nest-graphql-filters-0.0.2.tgz#abbab36952ebcde49379c0a65c009829f628dc4c"
-  integrity sha512-e3/xr0+e1yRGoXNBVY5IZd6ktv16RAJqf12gN+6TahsospAC/k5itsE3me90x9XneF3VIIAx3/P7UYb5WMg+hw==
+"@gabrieljsilva/nest-graphql-filters@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@gabrieljsilva/nest-graphql-filters/-/nest-graphql-filters-0.0.4.tgz#5b69c67a641d84e0ca48e1650c5cfc45022b2cf9"
+  integrity sha512-VRiYkmr/zt+ugxmQC3hXrCkQUnRNJtqb4Gtt1nC+UXxi0F5Cmr7QLe5Nke+ndnJqtwIdYawkyjWVeFtl5Mq1Kw==
   dependencies:
     "@nestjs/cli" "^10.3.1"
     "@nestjs/common" "^10.0.0"

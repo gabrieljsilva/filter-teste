@@ -1,53 +1,43 @@
 import {
   BadRequestException,
-  Inject,
   PipeTransform,
   Type,
+  Inject,
 } from '@nestjs/common';
 
 import {
   COMPARISON_OPERATOR,
-  LOGICAL_OPERATORS,
   FilterOf,
   FieldMetadata,
+  FilterOptions,
   getIndexedFields,
 } from '@gabrieljsilva/nest-graphql-filters';
-import { memoize } from '../utils';
-import { PrismaService } from '../infra';
 
-const clientToPrismaLogicalOperators: Record<LOGICAL_OPERATORS, string> = {
-  [LOGICAL_OPERATORS._AND]: 'AND',
-  [LOGICAL_OPERATORS._OR]: 'OR',
-  [LOGICAL_OPERATORS._NOT]: 'NOT',
-};
+import { memoize } from '../../utils';
+import { clientToPrismaLogicalOperators } from './constants';
 
 type QueryBuilderByOperationsMap = Record<COMPARISON_OPERATOR, Function>;
 
-export const ToPostgresPrismaQueryPipe = memoize<(type: Type) => PipeTransform>(
-  createToPostgresPrismaQueryPipe,
-);
+function createToPrismaQueryPipe(type: Type): Type<PipeTransform> {
+  class ToPrismaQueryPipe implements PipeTransform {
+    private readonly queryBuilderByOperationMap: QueryBuilderByOperationsMap;
 
-function createToPostgresPrismaQueryPipe(type: Type): Type<PipeTransform> {
-  class ToPostgresPrismaQueryPipe implements PipeTransform {
-    constructor(
-      @Inject(PrismaService) private readonly PrismaService: PrismaService,
-    ) {}
-
-    queryBuilderByOperationMap: QueryBuilderByOperationsMap = {
-      is: this.getIsOperator,
-      like: this.getLikeOperator,
-      in: this.getInOperator,
-      gt: this.getGtOperator,
-      lt: this.getLtOperator,
-      gte: this.getGteOperator,
-      lte: this.getLteOperator,
-    };
+    constructor(@Inject(FilterOptions) private filterOptions: FilterOptions) {
+      this.queryBuilderByOperationMap = {
+        is: this.getIsOperator.bind(this),
+        like: this.getLikeOperator.bind(this),
+        in: this.getInOperator.bind(this),
+        gt: this.getGtOperator.bind(this),
+        lt: this.getLtOperator.bind(this),
+        gte: this.getGteOperator.bind(this),
+        lte: this.getLteOperator.bind(this),
+      };
+    }
 
     async transform<T = unknown>(value: FilterOf<T>) {
       if (!value) return {};
 
       const fieldMetadata = getIndexedFields(type);
-
       return this.getWhereInputQuery(value, fieldMetadata);
     }
 
@@ -68,22 +58,21 @@ function createToPostgresPrismaQueryPipe(type: Type): Type<PipeTransform> {
           return;
         }
 
-        const queryProperty =
+        const logicalOperatorOrFilterProperty =
           clientToPrismaLogicalOperators[property] || property;
 
         const fieldMetadata = getIndexedFields(propertyMetadata.type);
 
         if (Array.isArray(fieldFilters)) {
-          query[queryProperty] = fieldFilters.map((item) =>
-            this.getWhereInputQuery(item, fieldMetadata, {}),
+          query[logicalOperatorOrFilterProperty] = fieldFilters.map((item) =>
+            this.getWhereInputQuery(item, fieldMetadata),
           );
           return;
         }
 
-        query[queryProperty] = this.getWhereInputQuery(
+        query[logicalOperatorOrFilterProperty] = this.getWhereInputQuery(
           fieldFilters,
           fieldMetadata,
-          {},
         );
       });
 
@@ -117,7 +106,17 @@ function createToPostgresPrismaQueryPipe(type: Type): Type<PipeTransform> {
     }
 
     getLikeOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
-      return { [metadata.name]: { contains: value, mode: 'insensitive' } };
+      const query = {
+        contains: value,
+      };
+
+      if (this.filterOptions.provider !== 'mssql') {
+        query['mode'] = 'insensitive';
+      }
+
+      return {
+        [metadata.name]: query,
+      };
     }
 
     getInOperator(metadata: FieldMetadata, value: FilterOf<unknown>) {
@@ -141,5 +140,9 @@ function createToPostgresPrismaQueryPipe(type: Type): Type<PipeTransform> {
     }
   }
 
-  return ToPostgresPrismaQueryPipe;
+  return ToPrismaQueryPipe;
 }
+
+export const ToPrismaQueryPipe = memoize<(type: Type) => PipeTransform>(
+  createToPrismaQueryPipe,
+);
