@@ -576,16 +576,16 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.56.0.tgz#ef20350fec605a7f7035a01764731b2de0f3782b"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@gabrieljsilva/nest-graphql-filters@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@gabrieljsilva/nest-graphql-filters/-/nest-graphql-filters-0.0.4.tgz#5b69c67a641d84e0ca48e1650c5cfc45022b2cf9"
-  integrity sha512-VRiYkmr/zt+ugxmQC3hXrCkQUnRNJtqb4Gtt1nC+UXxi0F5Cmr7QLe5Nke+ndnJqtwIdYawkyjWVeFtl5Mq1Kw==
+"@gabrieljsilva/nest-graphql-filters@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@gabrieljsilva/nest-graphql-filters/-/nest-graphql-filters-0.0.6.tgz#22db42523481d59298e8df9ad83d24a4e49c70ff"
+  integrity sha512-wgh5B6nZgtLFaM2BbHBmbBLdw9J9inNuxrYWzBzGoerOJQ03iC6AHYynvLux59eSf74GRrQWEh51fcLDs3TJvA==
   dependencies:
     "@nestjs/cli" "^10.3.1"
     "@nestjs/common" "^10.0.0"
     "@nestjs/core" "^10.0.0"
     "@nestjs/graphql" "^12.0.10"
-    graphql "^16.8.1"
+    graphql "16.8.1"
     reflect-metadata "^0.2.1"
 
 "@graphql-tools/merge@9.0.0":
@@ -3645,7 +3645,7 @@ graphql-ws@5.14.2:
   resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-5.14.2.tgz#7db6f6138717a544d9480f0213f65f2841ed1c52"
   integrity sha512-LycmCwhZ+Op2GlHz4BZDsUYHKRiiUz+3r9wbhBATMETNlORQJAaFlAgTFoeRh6xQoQegwYwIylVD1Qns9/DA3w==
 
-graphql@^16.8.1:
+graphql@16.8.1:
   version "16.8.1"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.8.1.tgz#1930a965bef1170603702acdb68aedd3f3cf6f07"
   integrity sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==

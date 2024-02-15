@@ -5,6 +5,8 @@ import { CreateUserDto } from './dto';
 import { PrismaService } from '../../infra';
 import { Hashing } from '../../utils';
 import { UpdateUserDto } from './dto';
+import { FilterOf } from '../../third-party/nest-graphql-filters-to-prisma-pipe';
+import { User } from '../../models';
 
 @Injectable()
 export class UserService {
@@ -51,9 +53,10 @@ export class UserService {
     });
   }
 
-  async findUsers(filters: Prisma.UserWhereInput) {
+  async findUsers(filters: FilterOf<User>) {
     return this.prisma.user.findMany({
-      where: filters,
+      where: filters['where'] as Prisma.UserWhereInput,
+      orderBy: filters.orderBy,
     });
   }
 

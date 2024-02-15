@@ -19,16 +19,15 @@ model Category {
 }
 
 model Photo {
-  id        String    @id @default(uuid())
-  url       String
-  createdAt DateTime  @default(now()) @map("created_at")
-  deletedAt DateTime? @map("deleted_at")
+  id String @id @default(uuid())
 
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  uploadId String
+  upload   Upload @relation(fields: [uploadId], references: [id])
 
   user   User?   @relation(fields: [userId], references: [id])
   userId String?
+
+  category Category[]
 
   @@map("photos")
 }
@@ -51,10 +50,21 @@ model User {
   birthDate DateTime  @map("birth_date")
   createdAt DateTime  @default(now()) @map("created_at")
   deletedAt DateTime? @map("deleted_at")
+  tags      String[]  @map("tags")
 
   photos        Photo[]
   credentialsId String
   credentials   Credentials @relation(fields: [credentialsId], references: [id])
 
   @@map("users")
+}
+
+model Upload {
+  id        String    @id @default(uuid())
+  url       String
+  createdAt DateTime
+  deletedAt DateTime?
+  Photo     Photo[]
+
+  @@map("uploads")
 }

@@ -1,20 +1,20 @@
 version: "3.8"
 
 services:
-  api_v1:
-    image: node:20.10.0-alpine
-    container_name: api_v1
-    ports:
-      - '3000:3000'
-    working_dir: '/source'
-    volumes:
-      - '.:/source'
-    command: "sh -c 'yarn && yarn start:dev'"
-    networks:
-      - default
-    restart: always
-    depends_on:
-      - postgres
+#  api_v1:
+#    image: node:20.10.0-alpine
+#    container_name: api_v1
+#    ports:
+#      - '3000:3000'
+#    working_dir: '/source'
+#    volumes:
+#      - '.:/source'
+#    command: "sh -c 'yarn && yarn start:dev'"
+#    networks:
+#      - default
+#    restart: always
+#    depends_on:
+#      - postgres
 
   postgres:
     container_name: postgres

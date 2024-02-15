@@ -1,26 +1,25 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
 import Prisma from '@prisma/client';
+import { Field } from '@nestjs/graphql';
 import {
   FilterableEntity,
   FilterableField,
 } from '@gabrieljsilva/nest-graphql-filters';
 
 @FilterableEntity()
-@ObjectType()
-export class Category implements Prisma.Category {
+export class Upload implements Prisma.Upload {
   @Field()
-  @FilterableField(() => ID)
+  @FilterableField()
   id: string;
 
   @Field()
   @FilterableField()
-  name: string;
+  url: string;
 
   @Field()
   // @FilterableField()
   createdAt: Date;
 
-  @Field({ nullable: true })
+  @Field()
   // @FilterableField()
   deletedAt: Date;
 }

@@ -1,13 +1,11 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-import {
-  FilterableEntity,
-  FilterableField,
-} from '@gabrieljsilva/nest-graphql-filters';
+import { FilterableEntity, FilterableField, SortableEntity } from '@gabrieljsilva/nest-graphql-filters';
 
 import { Photo } from './photo';
 import { Credentials } from './credentials';
 
+@SortableEntity()
 @FilterableEntity()
 @ObjectType()
 export class User {
@@ -20,22 +18,27 @@ export class User {
   name: string;
 
   @Field()
-  @FilterableField()
+  // @FilterableField()
   birthDate: Date;
 
   @Field()
-  @FilterableField()
+  // @FilterableField()
   createdAt: Date;
 
   @Field({ nullable: true })
-  @FilterableField({ nullable: true })
+  // @FilterableField({ nullable: true })
   deletedAt?: Date;
 
   @Field(() => [Photo])
   @FilterableField(() => [Photo])
   photos: Photo[];
 
+  @FilterableField()
   credentialsId: string;
+
+  @Field(() => [String])
+  @FilterableField(() => [String])
+  tags: string[];
 
   @Field(() => Credentials)
   @FilterableField(() => Credentials)

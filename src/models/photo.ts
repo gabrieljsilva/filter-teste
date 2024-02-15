@@ -7,6 +7,7 @@ import {
   FilterableEntity,
   FilterableField,
 } from '@gabrieljsilva/nest-graphql-filters';
+import { Upload } from './upload';
 
 @FilterableEntity()
 @ObjectType()
@@ -15,17 +16,10 @@ export class Photo implements Prisma.Photo {
   @FilterableField(() => ID)
   id: string;
 
-  @Field()
-  @FilterableField()
-  url: string;
+  uploadId: string;
 
-  @Field()
-  @FilterableField()
-  createdAt: Date;
-
-  @Field({ nullable: true })
-  @FilterableField()
-  deletedAt: Date;
+  @FilterableField(() => Upload)
+  upload: Upload;
 
   @FilterableField()
   categoryId: string;
@@ -33,7 +27,7 @@ export class Photo implements Prisma.Photo {
   @FilterableField()
   userId: string;
 
-  @Field()
-  @FilterableField()
-  category: Category;
+  @Field(() => [Category])
+  @FilterableField(() => [Category])
+  category: Category[];
 }

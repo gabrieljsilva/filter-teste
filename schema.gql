@@ -16,10 +16,7 @@ scalar DateTime
 
 type Photo {
   id: ID!
-  url: String!
-  createdAt: DateTime!
-  deletedAt: DateTime
-  category: Category!
+  category: [Category!]!
 }
 
 type Credentials {
@@ -36,6 +33,7 @@ type User {
   createdAt: DateTime!
   deletedAt: DateTime
   photos: [Photo!]!
+  tags: [String!]!
   credentials: Credentials!
 }
 
@@ -49,11 +47,11 @@ input UserFilter {
   _NOT: UserFilter
   id: IdFilter
   name: StringFilter
-  birthDate: DateTimeFilter
-  createdAt: DateTimeFilter
-  deletedAt: DateTimeFilter
-  photos: PhotoFilter
+  photos: ListFilterPhoto
+  credentialsId: StringFilter
+  tags: ListFilterString
   credentials: CredentialsFilter
+  _SORT_BY: [UserSortBy!]
 }
 
 input IdFilter {
@@ -66,13 +64,9 @@ input StringFilter {
   in: [String]
 }
 
-input DateTimeFilter {
-  is: DateTime
-  in: [DateTime]
-  gt: DateTime
-  lt: DateTime
-  gte: DateTime
-  lte: DateTime
+input ListFilterPhoto {
+  _EVERY: PhotoFilter
+  _SOME: PhotoFilter
 }
 
 input PhotoFilter {
@@ -80,12 +74,23 @@ input PhotoFilter {
   _OR: [PhotoFilter!]
   _NOT: PhotoFilter
   id: IdFilter
-  url: StringFilter
-  createdAt: DateTimeFilter
-  deletedAt: DateTimeFilter
+  upload: UploadFilter
   categoryId: StringFilter
   userId: StringFilter
-  category: CategoryFilter
+  category: ListFilterCategory
+}
+
+input UploadFilter {
+  _AND: [UploadFilter!]
+  _OR: [UploadFilter!]
+  _NOT: UploadFilter
+  id: StringFilter
+  url: StringFilter
+}
+
+input ListFilterCategory {
+  _EVERY: CategoryFilter
+  _SOME: CategoryFilter
 }
 
 input CategoryFilter {
@@ -94,8 +99,11 @@ input CategoryFilter {
   _NOT: CategoryFilter
   id: IdFilter
   name: StringFilter
-  createdAt: DateTimeFilter
-  deletedAt: DateTimeFilter
+}
+
+input ListFilterString {
+  _EVERY: [String!]
+  _SOME: [String!]
 }
 
 input CredentialsFilter {
@@ -104,6 +112,18 @@ input CredentialsFilter {
   _NOT: CredentialsFilter
   email: StringFilter
   user: UserFilter
+}
+
+input UserSortBy {
+  id: SortDirection
+  name: SortDirection
+  credentialsId: SortDirection
+  tags: SortDirection
+}
+
+enum SortDirection {
+  desc
+  asc
 }
 
 type Mutation {
